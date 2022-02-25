@@ -4,7 +4,7 @@
 	"description": "backend app for indieTour",
 	"main": "index.js",
 	"scripts": {
-		"start": "nodemon app.js localhost 3000"
+		"start": "nodemon app.js"
 	},
 	"repository": {
 		"type": "git",
@@ -17,7 +17,10 @@
 	},
 	"homepage": "https://github.com/dstoffels/indieTour-api#readme",
 	"dependencies": {
+		"axios": "^0.26.0",
+		"body-parser": "^1.19.2",
 		"express": "^4.17.3",
+		"firebase-admin": "^10.0.2",
 		"nodemon": "^2.0.15",
 		"reload": "^3.2.0"
 	}
