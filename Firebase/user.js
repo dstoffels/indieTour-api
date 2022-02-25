@@ -1,4 +1,5 @@
 const axios = require('axios');
+const rest = require('./rest.js');
 const firebase = require('./firebase.js');
 const auth = firebase.auth();
 
@@ -30,10 +31,7 @@ const createEmailUser = (userData, res) => {
 
 const emailLogin = (emailPassword, res) => {
 	axios
-		.post(
-			'https://identitytoolkit.googleapis.com/v1/accounts:signInWithPassword?key=AIzaSyBN6vQ6rPOyz2eax_xKWMzhpBsa_qw7kpA',
-			{ ...emailPassword },
-		)
+		.post(rest.signInWithPassword, { ...emailPassword })
 		.then(response => {
 			res.send(response.data);
 		})
