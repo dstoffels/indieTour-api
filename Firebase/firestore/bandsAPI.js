@@ -1,17 +1,25 @@
 const { firestore } = require('../firebase.js');
 const { BANDS, pathBldr, getPath } = require('./paths.js');
 
-exports.createBand = ({ name, ownerId, admins, members }, res) => {
+const fetchBand = async bandId => await firestore.doc(pathBldr(BANDS, bandId)).get();
+
+exports.createBand = async ({ name, ownerId, admins, members }) => {
 	const bands = firestore.collection(BANDS);
-	bands.add({ name, ownerId, admins, members }).then(doc => {
-		res.send(getPath(doc));
-	});
+	const doc = await bands.add({ name, ownerId, admins, members });
+	return getPath(doc);
 };
 
-exports.deleteBand = (bandId, res) => {
-	const band = firestore.doc(pathBldr(BANDS, bandId));
-	band
-		.delete()
-		.then(time => res.send(time))
-		.catch(err => res.send(err));
+exports.getBand = async bandId => {
+	const bandSnap = await fetchBand(bandId);
+	return bandSnap.data();
+};
+
+exports.editBand = async (bandId, body) => {
+	const bandDoc = firestore.doc(pathBldr(BANDS, bandId));
+	return await bandDoc.update(body);
+};
+
+exports.deleteBand = async bandId => {
+	const bandSnap = firestore.doc(pathBldr(BANDS, bandId));
+	await bandSnap.delete();
 };
