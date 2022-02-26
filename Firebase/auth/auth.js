@@ -1,5 +1,3 @@
-const axios = require('axios');
-const rest = require('../firebaseAPI.js');
 const { auth, firebaseAuth } = require('../firebase.js');
 const {
 	createUserWithEmailAndPassword,

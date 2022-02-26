@@ -6,7 +6,8 @@ module.exports = function (app) {
 			const newUser = await userAPI.createEmailUser(req.body);
 			res.send(newUser);
 		} catch (error) {
-			res.status(400).json(error);
+			error.code === 'auth/email-already-in-use' &&
+				res.status(400).json({ message: 'Email already in use.' });
 		}
 	});
 
