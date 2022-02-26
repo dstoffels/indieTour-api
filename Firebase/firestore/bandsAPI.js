@@ -16,7 +16,9 @@ exports.getBand = async bandId => {
 
 exports.editBand = async (bandId, body) => {
 	const bandDoc = firestore.doc(pathBldr(BANDS, bandId));
-	return await bandDoc.update(body);
+	await bandDoc.update(body);
+	const bandSnap = await fetchBand(bandId);
+	return bandSnap.data();
 };
 
 exports.deleteBand = async bandId => {

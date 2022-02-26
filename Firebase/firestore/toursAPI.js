@@ -6,15 +6,14 @@ const fetchTours = async bandId => {
 	return tours.docs.map(doc => doc.data());
 };
 
-exports.createTour = async (bandId, { name, startDate, endDate }, res) => {
+exports.createTour = async (bandId, tourData) => {
 	const tours = await fetchTours(bandId);
-	if (tours.filter(tour => tour.name === name).length) {
-		res.status(400).json({ error: 'A tour of that name already exists' });
+	if (tours.find(tour => tour.name === tourData.name)) {
+		throw { message: 'A tour of that name already exists' };
 	} else {
 		const bandTours = firestore.collection(pathBldr(BANDS, bandId, TOURS));
-		bandTours.add({ name, startDate, endDate }).then(doc => {
-			res.send(getPath(doc));
-		});
+		const tourDoc = await bandTours.add(tourData);
+		return getPath(tourDoc);
 	}
 };
 
