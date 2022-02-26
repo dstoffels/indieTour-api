@@ -6,4 +6,6 @@ const firebase = admin.initializeApp({
 	databaseURL: 'https://indietour-9bf7b-default-rtdb.firebaseio.com',
 });
 
-module.exports = firebase;
+const firestore = firebase.firestore();
+
+module.exports = { firebase, firestore };
