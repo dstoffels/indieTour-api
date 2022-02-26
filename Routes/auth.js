@@ -1,4 +1,4 @@
-const userAPI = require('../Firebase/auth/userAPI.js');
+const userAPI = require('../Firebase/auth/auth.js');
 
 module.exports = function (app) {
 	app.post('/auth/new-user', async (req, res) => {
