@@ -1,4 +1,4 @@
-const auth = require('../Firebase/auth/auth.js');
+const auth = require('../Firebase/auth/authAPI.js');
 
 module.exports = function (app) {
 	app.post('/auth/new-user', async (req, res) => {
@@ -20,17 +20,5 @@ module.exports = function (app) {
 		}
 	});
 
-	app.get('/auth', async (req, res) => {
-		try {
-			const token = await auth.authorize(req.headers.idtoken);
-			res.send(token);
-		} catch (error) {
-			error.code === 'auth/id-token-expired' &&
-				res
-					.status(401)
-					.json({
-						message: 'JWT has expired and must be refreshed or user must be signed in again',
-					});
-		}
-	});
+	app.get('/auth', async (req, res) => {});
 };

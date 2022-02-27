@@ -7,7 +7,7 @@ app.use(json);
 const port = 3002;
 
 app.listen(port, () => {
-	console.log(`Example app listening on port ${port}`);
+	console.log(`indieTour listening on port ${port}`);
 });
 
 require('./Routes/auth.js')(app);
