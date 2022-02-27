@@ -15,7 +15,7 @@ const generateAuthData = userCredentials => {
 	return { uid, email, emailVerified, displayName, token: stsTokenManager };
 };
 
-// TODO: if pw === 'password', force user to change before logging in
+// TODO: if pw === 'password', force user to change before logging in??
 exports.createEmailUser = async ({ email, password, username }) => {
 	const newUserCredentials = await createUserWithEmailAndPassword(firebaseAuth, email, password);
 	await sendEmailVerification(newUserCredentials.user);
@@ -29,10 +29,6 @@ exports.emailLogin = async ({ email, password }) => {
 };
 
 // AUTHORIZATION
-
-/// TODO: turn this into a wrapper/decorator?
-// exports.authorize = async request => {};
-
 exports.authorize = APIfn => async request => {
 	const decodedToken = await auth.verifyIdToken(request.headers.auth);
 	const uid = decodedToken.uid;

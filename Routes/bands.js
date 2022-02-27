@@ -2,6 +2,16 @@ const { authorize } = require('../Firebase/auth/authAPI.js');
 const bandsAPI = require('../Firebase/firestore/bands/bandsAPI.js');
 
 module.exports = function (app) {
+	app.get('/bands', async (req, res) => {
+		try {
+			const userBands = await authorize(bandsAPI.getUserBands)(req);
+			res.send(userBands);
+		} catch (error) {
+			console.log(error);
+			res.send(error);
+		}
+	});
+
 	app.post('/bands/new', async (req, res) => {
 		try {
 			const band = await authorize(bandsAPI.createBand)(req);

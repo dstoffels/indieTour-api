@@ -1,9 +1,11 @@
-**Authorization**
+**Tasks**
 
-1. Authorize with JWT to return uid
-2. Filter a list of bands where user is a member/admin/owner (store owner/admins in members too?)
+<!-- 1. Authorize with JWT to return uid (use auth/authAPI.authorize() HOF) -->
+<!-- 2. Filter a list of bands where user is a member -->
+
 3. When band is selected, assign user role (custom claim?).
-4.
+4. create owner permissions HOF
+5. create admin permissions HOF
 
 **Band User Roles**
 
@@ -24,12 +26,14 @@
 **Band object structure**
 
 - Band
-  - members[userObj]
+  - name: str
+  - members: collection[memberObj]
+    (what if owner wants to change band name? will have to update bands/:bandId/members[each.band.name] and anywhere else the band name is stored in subcollections)
   - tours: collection[tourObj]
 
-**User object structure**
+**Member object structure**
 
-- User
+- Member
   - uid: str
   - email: str
   - role: str

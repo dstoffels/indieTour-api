@@ -1,9 +1,9 @@
 // ROOT PATHS
-const USERS = '/users';
 const VENUES = '/venues';
 const BANDS = '/bands';
 
 // SUB PATHS
+const MEMBERS = 'members';
 const TOURS = 'tours';
 const DATES = 'dates';
 const SCHEDULE = 'schedule';
@@ -18,4 +18,4 @@ function getPath(doc) {
 	return `/${doc._path.segments.join('/')}`;
 }
 
-module.exports = { USERS, VENUES, BANDS, TOURS, DATES, SCHEDULE, EVENTS, pathBldr, getPath };
+module.exports = { VENUES, BANDS, MEMBERS, TOURS, DATES, SCHEDULE, EVENTS, pathBldr, getPath };

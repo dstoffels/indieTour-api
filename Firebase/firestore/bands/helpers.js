@@ -1,7 +1,7 @@
-const { firestore, auth } = require('../../firebase.js');
+const { firestore } = require('../../firebase.js');
 const { BANDS, pathBldr, getPath } = require('../paths.js');
 
-const validateBand
+// const validateBand???
 
-const fetchBand = async bandId => await firestore.doc(pathBldr(BANDS, bandId)).get();
-const fetchBands = async () => await firestore.collection(BANDS).get();
+exports.fetchBandDoc = async bandId => await firestore.doc(pathBldr(BANDS, bandId)).get();
+exports.fetchBandDocs = async () => await firestore.collection(BANDS).get();
