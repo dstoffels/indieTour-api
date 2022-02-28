@@ -14,8 +14,27 @@ function pathBldr() {
 	return args.join('/');
 }
 
+const bandPath = bandId => `${BANDS}/${bandId}`;
+const memberPath = (bandId, memberId) => `${BANDS}/${bandId}/${MEMBERS}/${memberId}`;
+const tourPath = (bandId, tourId) => `${bandPath(bandId)}/${TOURS}/${tourId}`;
+const datePath = (bandId, tourId, dateId) => `${tourPath(bandId, tourId)}/${DATES}/${dateId}`;
+
 function getPath(doc) {
 	return `/${doc._path.segments.join('/')}`;
 }
 
-module.exports = { VENUES, BANDS, MEMBERS, TOURS, DATES, SCHEDULE, EVENTS, pathBldr, getPath };
+module.exports = {
+	VENUES,
+	BANDS,
+	MEMBERS,
+	TOURS,
+	DATES,
+	SCHEDULE,
+	EVENTS,
+	pathBldr,
+	getPath,
+	bandPath,
+	memberPath,
+	tourPath,
+	datePath,
+};

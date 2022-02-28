@@ -1,9 +1,7 @@
 const { firestore } = require('../../firebase.js');
+const { MEMBER } = require('../bands/bandAuth.js');
 const { addMemberToBand } = require('../bands/helpers.js');
-const {
-	validateUniqueEmailInCollection,
-	validateUniqueNameInCollection,
-} = require('../helpers.js');
+const { validateUniqueEmailInCollection } = require('../helpers.js');
 const { pathBldr, MEMBERS, BANDS } = require('../paths.js');
 
 exports.getBandMembers = async (request, uid) => {
@@ -24,7 +22,7 @@ exports.addBandMember = async (request, uid) => {
 	const member = request.body;
 	const path = pathBldr(BANDS, bandId, MEMBERS);
 
-	await validateUniqueNameInCollection(path, member.email, 'email');
+	await validateUniqueEmailInCollection(path, member.email, MEMBER);
 
 	const band = await firestore.doc(pathBldr(BANDS, bandId)).get();
 
@@ -32,8 +30,10 @@ exports.addBandMember = async (request, uid) => {
 };
 
 exports.changeMemberRole = async (request, uid) => {};
-// owner cannot be removed!!
 
+exports.editMember = async (request, uid) => {};
+
+// owner cannot be removed!!
 exports.removeBandMember = async (request, uid) => {
 	// const memberSnap = firestore.doc(pathBldr(BANDS, bandId, MEMBERS, memberId));
 	// memberSnap.delete();
