@@ -12,4 +12,5 @@ app.listen(port, () => {
 
 require('./Routes/auth.js')(app);
 require('./Routes/bands.js')(app);
+require('./Routes/members.js')(app);
 require('./Routes/tours.js')(app);

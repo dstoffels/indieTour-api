@@ -3,11 +3,11 @@
 <!-- 1. Authorize with JWT to return uid (use auth/authAPI.authorize() HOF) -->
 <!-- 2. Filter a list of bands where user is a member -->
 <!-- 3. When band is selected, assign user role. (user role included with bandData) -->
-
 <!-- 4. create owner permissions HOF -->
+<!-- 5. create admin permissions HOF -->
 
-5. create get bandmembers method
-6. create admin permissions HOF
+6. implement band members routes & views
+7. update all member instances when user changes name or deletes self
 
 **Band User Roles**
 
@@ -36,9 +36,10 @@
 **Member object structure**
 
 - Member
+  - id: str
   - uid: str
   - email: str
-  - role: str
+  - bandData: BandData(id, name, memberRole, path)
 
 **Venue object structure**
 

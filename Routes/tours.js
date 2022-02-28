@@ -1,4 +1,4 @@
-const toursAPI = require('../Firebase/firestore/toursAPI.js');
+const toursAPI = require('../Firebase/firestore//tours/toursAPI.js');
 
 module.exports = function (app) {
 	app.post(`/bands/:bandId/tours/new`, async (req, res) => {

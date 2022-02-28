@@ -26,6 +26,3 @@ exports.addMemberToBand = async (band, member) => {
 };
 
 exports.fetchBand = async bandId => await firestore.doc(pathBldr(BANDS, bandId)).get();
-
-exports.getMemberQuery = async uid =>
-	await firestore.collectionGroup(MEMBERS).where('uid', '==', uid).get();

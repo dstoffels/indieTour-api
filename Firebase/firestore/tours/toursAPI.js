@@ -1,5 +1,5 @@
-const { firestore } = require('../firebase.js');
-const { pathBldr, BANDS, TOURS, getPath } = require('./paths.js');
+const { firestore } = require('../../firebase.js');
+const { pathBldr, BANDS, TOURS, getPath } = require('../paths.js');
 
 const fetchTours = async bandId => {
 	const tours = await firestore.collection(pathBldr(BANDS, bandId, TOURS)).get();

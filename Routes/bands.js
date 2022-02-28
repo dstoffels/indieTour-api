@@ -39,7 +39,4 @@ module.exports = function (app) {
 			res.status(400).json(error);
 		}
 	});
-
-	app.post('bands/:bandId/members');
-	app.delete('bands/:bandId/members/:memberId');
 };
