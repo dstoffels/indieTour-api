@@ -6,7 +6,7 @@ const {
 	updateProfile,
 } = require('firebase/auth');
 
-// authentication utilize the firebase SDK,
+// authentication utilizes the firebase SDK,
 // authorization is handled by firebase-admin SDK
 
 // AUTHENTICATION
@@ -16,10 +16,10 @@ const generateAuthData = userCredentials => {
 };
 
 // TODO: if pw === 'password', force user to change before logging in??
-exports.createEmailUser = async ({ email, password, username }) => {
+exports.createEmailUser = async ({ email, password, name }) => {
 	const newUserCredentials = await createUserWithEmailAndPassword(firebaseAuth, email, password);
 	await sendEmailVerification(newUserCredentials.user);
-	await updateProfile(newUserCredentials.user, { displayName: username });
+	await updateProfile(newUserCredentials.user, { displayName: name });
 	return generateAuthData(newUserCredentials);
 };
 

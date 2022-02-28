@@ -24,7 +24,7 @@ module.exports = function (app) {
 
 	app.get('/bands/:bandId', async (req, res) => {
 		try {
-			const band = await bandsAPI.getBand(req.params.bandId);
+			const band = await bandsAPI.selectBand(req.params.bandId);
 			res.send(band);
 		} catch {
 			res.status(400).json({ message: 'Band not found.' });
