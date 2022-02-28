@@ -35,6 +35,6 @@ exports.decodeToken = async token => {
 
 // AUTHORIZATION
 exports.authorize = APIfn => async request => {
-	const uid = this.decodeToken(request.headers.auth);
+	const uid = await this.decodeToken(request.headers.auth);
 	return await APIfn(request, uid);
 };

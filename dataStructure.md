@@ -37,6 +37,7 @@
 
 - Member
   - id: str
+  - name: str
   - uid: str
   - email: str
   - bandData: BandData(id, name, memberRole, path)

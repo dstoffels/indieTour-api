@@ -12,15 +12,19 @@ exports.addMemberToBand = async (band, member) => {
 		const user = await auth.getUserByEmail(member.email);
 		const newMember = await band.ref
 			.collection(MEMBERS)
-			.add({ uid: user.uid, email: user.email, band: { ...bandData } })
+			.add({ uid: user.uid, name: member.name, email: user.email, band: { ...bandData } })
 			.then(doc => doc.get());
 		return newMember;
 	} catch {
 		// TODO: sort out how to handle temporary pw (front end?)
-		const user = await createEmailUser({ email: member.email, password: 'password' });
+		const user = await createEmailUser({
+			email: member.email,
+			password: 'password',
+			name: member.name,
+		});
 		return await band.ref
 			.collection(MEMBERS)
-			.add({ uid: user.uid, email: user.email, band: { ...bandData } })
+			.add({ uid: user.uid, name: member.name, email: user.email, band: { ...bandData } })
 			.then(doc => doc.get());
 	}
 };
