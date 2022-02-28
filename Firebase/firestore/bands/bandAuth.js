@@ -39,4 +39,17 @@ const authorizeAdmin = APIfn => async request => {
 	};
 };
 
-module.exports = { OWNER, ADMIN, MEMBER, authorizeOwner, authorizeAdmin };
+const authorizeMember = APIfn => async request => {
+	const uid = await decodeToken(request.headers.auth);
+
+	if (await validateMember(MEMBER, request.params.bandId)) {
+		return await APIfn(request, uid);
+	}
+
+	throw {
+		code: 'bands/unauthorized',
+		message: 'Only an members of this band is authorized to do this.',
+	};
+};
+
+module.exports = { OWNER, ADMIN, MEMBER, authorizeOwner, authorizeAdmin, authorizeMember };
