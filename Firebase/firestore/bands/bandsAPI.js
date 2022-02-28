@@ -1,7 +1,7 @@
 const { firestore } = require('../../firebase.js');
 const { validateUniqueNameInCollection } = require('../helpers.js');
 const { BANDS, MEMBERS, pathBldr, getPath } = require('../paths.js');
-const { fetchBandDoc, fetchBandDocs, addMemberToBand } = require('./helpers.js');
+const { fetchBand, fetchBands, addMemberToBand } = require('./helpers.js');
 
 exports.createBand = async (request, uid) => {
 	const { name, members } = request.body;
@@ -24,12 +24,15 @@ exports.createBand = async (request, uid) => {
 	return newMembers.find(member => member.data().uid === uid).data().band;
 };
 
-exports.selectBand = async bandId => {
-	const bandSnap = await fetchBand(bandId);
-	return bandSnap.data();
+exports.getUserBands = async (request, uid) => {
+	const memberQuery = await firestore.collectionGroup(MEMBERS).where('uid', '==', uid).get();
+	const userBands = memberQuery.docs.map(doc => {
+		return doc.data().band;
+	});
+	return userBands;
 };
 
-exports.editBand = async (bandId, body) => {
+exports.editBand = async (request, uid) => {
 	const bandDoc = firestore.doc(pathBldr(BANDS, bandId));
 	await bandDoc.update(body);
 	const bandSnap = await fetchBand(bandId);
@@ -40,14 +43,6 @@ exports.deleteBand = async bandId => {
 	// authorize user
 	const bandSnap = firestore.doc(pathBldr(BANDS, bandId));
 	await bandSnap.delete();
-};
-
-exports.getUserBands = async (request, uid) => {
-	const memberQuery = await firestore.collectionGroup(MEMBERS).where('uid', '==', uid).get();
-	const userBands = memberQuery.docs.map(doc => {
-		return doc.data().band;
-	});
-	return userBands;
 };
 
 exports.removeBandMember = async (bandId, memberId) => {

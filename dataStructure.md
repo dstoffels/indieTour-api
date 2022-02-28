@@ -2,8 +2,8 @@
 
 <!-- 1. Authorize with JWT to return uid (use auth/authAPI.authorize() HOF) -->
 <!-- 2. Filter a list of bands where user is a member -->
+<!-- 3. When band is selected, assign user role. (user role included with bandData) -->
 
-3. When band is selected, assign user role (custom claim?).
 4. create owner permissions HOF
 5. create admin permissions HOF
 
@@ -16,7 +16,7 @@
 **Database structure**
 
 - Bands
-  - Users
+  - Members
   - Tours
     - Dates
       - Prospects

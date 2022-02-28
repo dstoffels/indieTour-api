@@ -1,4 +1,4 @@
-const { auth, firebaseAuth } = require('../firebase.js');
+const { auth, firebaseAuth, firestore } = require('../firebase.js');
 const {
 	createUserWithEmailAndPassword,
 	signInWithEmailAndPassword,
@@ -28,9 +28,13 @@ exports.emailLogin = async ({ email, password }) => {
 	return generateAuthData(userCredentials);
 };
 
+exports.decodeToken = async token => {
+	const decodedToken = await auth.verifyIdToken(token);
+	return decodedToken.uid;
+};
+
 // AUTHORIZATION
 exports.authorize = APIfn => async request => {
-	const decodedToken = await auth.verifyIdToken(request.headers.auth);
-	const uid = decodedToken.uid;
+	const uid = decodeToken(request.headers.auth);
 	return await APIfn(request, uid);
 };

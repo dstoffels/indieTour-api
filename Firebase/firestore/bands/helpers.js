@@ -27,5 +27,5 @@ exports.addMemberToBand = async (bandSnap, member) => {
 	}
 };
 
-exports.fetchBandDoc = async bandId => await firestore.doc(pathBldr(BANDS, bandId)).get();
-exports.fetchBandDocs = async () => await firestore.collection(BANDS).get();
+exports.fetchBand = async bandId => await firestore.doc(pathBldr(BANDS, bandId)).get();
+exports.fetchBands = async () => await firestore.collection(BANDS).get();
