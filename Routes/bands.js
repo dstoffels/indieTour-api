@@ -23,16 +23,17 @@ module.exports = function (app) {
 
 	app.put('/bands/:bandId', async (req, res) => {
 		try {
-			const band = await authorizeOwner(bandsAPI.editBand)(req);
-			res.send(band);
-		} catch {
-			res.status(400).json({ message: 'Invalid bandId' });
+			const updatedBand = await authorizeOwner(bandsAPI.editBand)(req);
+			res.send(updatedBand);
+		} catch (error) {
+			console.log(error);
+			res.send(error);
 		}
 	});
 
 	app.delete('/bands/:bandId/delete', async (req, res) => {
 		try {
-			await bandsAPI.deleteBand(req.params.bandId, res);
+			await authorizeOwner(bandsAPI.deleteBand)(req);
 			res.status(204).json();
 		} catch {
 			res.status(400).json({ message: 'Band not found.' });
