@@ -1,7 +1,7 @@
 const { firestore } = require('../../firebase.js');
 const { validateUniqueNameInCollection } = require('../helpers.js');
 const { BANDS, MEMBERS, pathBldr, getPath } = require('../paths.js');
-const { fetchBandDoc, fetchBandDocs, addMemberToBandDoc } = require('./helpers.js');
+const { fetchBandDoc, fetchBandDocs, addMemberToBand } = require('./helpers.js');
 
 exports.createBand = async (request, uid) => {
 	const { name, members } = request.body;
@@ -16,9 +16,12 @@ exports.createBand = async (request, uid) => {
 		.then(doc => doc.get());
 
 	// add band members
-	members.forEach(member => addMemberToBandDoc(bandSnap, member));
+	const newMembers = await Promise.all(
+		members.map(async member => await addMemberToBand(bandSnap, member)),
+	);
 
-	return getPath(bandDoc);
+	// return new band
+	return newMembers.find(member => member.data().uid === uid).data().band;
 };
 
 exports.selectBand = async bandId => {

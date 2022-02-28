@@ -17,7 +17,7 @@ module.exports = function (app) {
 			const band = await authorize(bandsAPI.createBand)(req);
 			res.send(band);
 		} catch (error) {
-			// console.log(error);
+			console.log(error);
 			res.status(400).json(error);
 		}
 	});
