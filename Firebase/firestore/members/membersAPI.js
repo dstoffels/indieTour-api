@@ -1,19 +1,35 @@
 const { firestore } = require('../../firebase.js');
-const { validateUniqueNameInCollection } = require('../helpers.js');
+const { addMemberToBand } = require('../bands/helpers.js');
+const {
+	validateUniqueEmailInCollection,
+	validateUniqueNameInCollection,
+} = require('../helpers.js');
 const { pathBldr, MEMBERS, BANDS } = require('../paths.js');
 
-exports.getBandMembers = async (request, uid) =>
-	await firestore
-		.collection(pathBldr(BANDS, request.params.bandId, MEMBERS))
+exports.getBandMembers = async (request, uid) => {
+	const bandId = request.params.bandId;
+	const path = pathBldr(BANDS, bandId, MEMBERS);
+	return await firestore
+		.collection(path)
 		.get()
-		.then(col =>
-			col.docs.map(doc => {
+		.then(collection =>
+			collection.docs.map(doc => {
 				return { ...doc.data(), id: doc.id };
 			}),
 		);
+};
 
-// check for duplicate emails
-exports.addBandMember = async (request, uid) => {};
+exports.addBandMember = async (request, uid) => {
+	const bandId = request.params.bandId;
+	const member = request.body;
+	const path = pathBldr(BANDS, bandId, MEMBERS);
+
+	await validateUniqueNameInCollection(path, member.email, 'email');
+
+	const band = await firestore.doc(pathBldr(BANDS, bandId)).get();
+
+	await addMemberToBand(band, member);
+};
 
 exports.changeMemberRole = async (request, uid) => {};
 // owner cannot be removed!!

@@ -1,22 +1,22 @@
 const { decodeToken } = require('../../auth/authAPI.js');
-const { getMemberQuery } = require('./helpers.js');
+const { getMemberQuery } = require('../members/helpers.js');
 
 const OWNER = 'owner';
 const ADMIN = 'admin';
 const MEMBER = 'member';
 
-const validateMember = async (role, bandId) => {
+const validateMember = async (uid, roles, bandId) => {
 	const memberQuery = await getMemberQuery(uid);
 	return memberQuery.docs.find(doc => {
 		const member = doc.data();
-		return member.band.memberRole === role && member.band.id === bandId;
+		return roles.includes(member.band.memberRole) && member.band.id === bandId;
 	});
 };
 
 const authorizeOwner = APIfn => async request => {
 	const uid = await decodeToken(request.headers.auth);
 
-	if (await validateMember(OWNER, request.params.bandId)) {
+	if (await validateMember(uid, [OWNER], request.params.bandId)) {
 		return await APIfn(request, uid);
 	}
 
@@ -29,7 +29,7 @@ const authorizeOwner = APIfn => async request => {
 const authorizeAdmin = APIfn => async request => {
 	const uid = await decodeToken(request.headers.auth);
 
-	if (await validateMember(ADMIN, request.params.bandId)) {
+	if (await validateMember(uid, [ADMIN, OWNER], request.params.bandId)) {
 		return await APIfn(request, uid);
 	}
 
@@ -42,7 +42,7 @@ const authorizeAdmin = APIfn => async request => {
 const authorizeMember = APIfn => async request => {
 	const uid = await decodeToken(request.headers.auth);
 
-	if (await validateMember(MEMBER, request.params.bandId)) {
+	if (await validateMember(uid, [MEMBER, ADMIN, OWNER], request.params.bandId)) {
 		return await APIfn(request, uid);
 	}
 

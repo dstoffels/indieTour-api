@@ -3,10 +3,21 @@ const { firestore, auth } = require('../firebase.js');
 const validateUniqueNameInCollection = async (path, name, type = 'item') => {
 	const snapshot = await firestore.collection(path).get();
 	const docs = snapshot.docs.map(doc => doc.data());
-	if (docs.find(item => item.name === name)) {
+	if (docs.find(item => item[type] === name)) {
 		throw {
 			code: `${type}/duplicate`,
 			message: capitalize(`${aOrAn(type)} of that name already exists.`),
+		};
+	}
+};
+
+const validateUniqueEmailInCollection = async (path, email, type = 'item') => {
+	const snapshot = await firestore.collection(path).get();
+	const docs = snapshot.docs.map(doc => doc.data());
+	if (docs.find(item => item.email === email)) {
+		throw {
+			code: `${type}/duplicate`,
+			message: capitalize(`${aOrAn(type)} with that email already exists.`),
 		};
 	}
 };
@@ -21,4 +32,9 @@ function capitalize(str) {
 	return first + str.slice(1);
 }
 
-module.exports = { validateUniqueNameInCollection, aOrAn, capitalize };
+module.exports = {
+	validateUniqueNameInCollection,
+	validateUniqueEmailInCollection,
+	aOrAn,
+	capitalize,
+};
