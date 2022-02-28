@@ -1,7 +1,7 @@
 const { firestore } = require('../../firebase.js');
 const { validateUniqueNameInCollection } = require('../helpers.js');
 const { BANDS, MEMBERS, pathBldr, getPath } = require('../paths.js');
-const { fetchBand, fetchBands, addMemberToBand, getMemberQuery } = require('./helpers.js');
+const { fetchBand, addMemberToBand, getMemberQuery } = require('./helpers.js');
 
 exports.createBand = async (request, uid) => {
 	const { name, members } = request.body;
@@ -50,14 +50,17 @@ exports.editBand = async (request, uid) => {
 	});
 };
 
-exports.deleteBand = async (request, uid) => {
-	const band = firestore.doc(pathBldr(BANDS, bandId));
-	await band.delete();
-};
+exports.deleteBand = async (request, uid) =>
+	await firestore.doc(pathBldr(BANDS, request.params.bandId)).delete();
 
+// BAND MEMBERS
+exports.getBandMembers = async (request, uid) => {};
+
+// check for duplicate emails
 exports.addBandMember = async (request, uid) => {};
 
+// owner cannot be removed!!
 exports.removeBandMember = async (request, uid) => {
-	const memberSnap = firestore.doc(pathBldr(BANDS, bandId, MEMBERS, memberId));
-	memberSnap.delete();
+	// const memberSnap = firestore.doc(pathBldr(BANDS, bandId, MEMBERS, memberId));
+	// memberSnap.delete();
 };

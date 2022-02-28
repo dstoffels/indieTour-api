@@ -17,6 +17,7 @@ module.exports = function (app) {
 			const band = await authorize(bandsAPI.createBand)(req);
 			res.send(band);
 		} catch (error) {
+			console.log(error);
 			res.status(400).json(error);
 		}
 	});
@@ -26,17 +27,19 @@ module.exports = function (app) {
 			const updatedBand = await authorizeOwner(bandsAPI.editBand)(req);
 			res.send(updatedBand);
 		} catch (error) {
-			console.log(error);
-			res.send(error);
+			res.status(400).json(error);
 		}
 	});
 
 	app.delete('/bands/:bandId/delete', async (req, res) => {
 		try {
-			await authorizeOwner(bandsAPI.deleteBand)(req);
-			res.status(204).json();
-		} catch {
-			res.status(400).json({ message: 'Band not found.' });
+			const result = await authorizeOwner(bandsAPI.deleteBand)(req);
+			res.status(204).json(result);
+		} catch (error) {
+			res.status(400).json(error);
 		}
 	});
+
+	app.post('bands/:bandId/members');
+	app.delete('bands/:bandId/members/:memberId');
 };

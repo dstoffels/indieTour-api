@@ -4,8 +4,10 @@
 <!-- 2. Filter a list of bands where user is a member -->
 <!-- 3. When band is selected, assign user role. (user role included with bandData) -->
 
-4. create owner permissions HOF
-5. create admin permissions HOF
+<!-- 4. create owner permissions HOF -->
+
+5. create get bandmembers method
+6. create admin permissions HOF
 
 **Band User Roles**
 
