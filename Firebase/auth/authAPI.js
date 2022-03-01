@@ -28,13 +28,10 @@ exports.emailLogin = async ({ email, password }) => {
 	return generateAuthData(userCredentials);
 };
 
-exports.decodeToken = async token => {
-	const decodedToken = await auth.verifyIdToken(token);
-	return decodedToken.uid;
-};
+exports.getAuthorizedUser = async token => await auth.verifyIdToken(token);
 
 // AUTHORIZATION
 exports.authorize = APIfn => async request => {
-	const uid = await this.decodeToken(request.headers.auth);
-	return await APIfn(request, uid);
+	const authUser = await this.getAuthorizedUser(request.headers.auth);
+	return await APIfn(request, authUser);
 };

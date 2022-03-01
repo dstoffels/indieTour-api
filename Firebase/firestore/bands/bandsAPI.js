@@ -3,10 +3,15 @@ const { validateUniqueNameInCollection } = require('../helpers.js');
 const { getMemberQuery } = require('../members/helpers.js');
 const MemberData = require('../members/MemberData.js');
 const { BANDS, MEMBERS, pathBldr, bandPath } = require('../paths.js');
-const { fetchBand, addMemberToBand, addNewOrGetExistingUsers } = require('./helpers.js');
+const { OWNER } = require('./bandAuth.js');
+const { addNewOrGetExistingUsers } = require('./helpers.js');
 
-exports.createBand = async (request, uid) => {
+exports.createBand = async (request, authUser) => {
 	const { name, members } = request.body;
+
+	// add creator as band owner
+	members.push({ ...authUser, role: OWNER });
+
 	try {
 		return firestore.runTransaction(async t => {
 			const bands = await t.get(firestore.collection(BANDS));
@@ -30,18 +35,18 @@ exports.createBand = async (request, uid) => {
 				return member;
 			});
 
-			return newMembers.find(member => member.uid === uid);
+			return newMembers.find(member => member.uid === authUser.uid);
 		});
 	} catch (error) {}
 };
 
-exports.getUserBands = async (request, uid) => {
-	const memberQuery = await getMemberQuery(uid);
+exports.getUserBands = async (request, authUser) => {
+	const memberQuery = await getMemberQuery(authUser.uid);
 	const userBands = memberQuery.docs.map(doc => doc.data());
 	return userBands;
 };
 
-exports.editBand = async (request, uid) => {
+exports.editBand = async (request, authUser) => {
 	const bandId = request.params.bandId;
 	const newName = request.body.name;
 
@@ -57,5 +62,5 @@ exports.editBand = async (request, uid) => {
 	});
 };
 
-exports.deleteBand = async (request, uid) =>
+exports.deleteBand = async (request, authUser) =>
 	await firestore.doc(pathBldr(BANDS, request.params.bandId)).delete();
