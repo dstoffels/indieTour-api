@@ -1,33 +1,43 @@
 const { firestore } = require('../../firebase.js');
 const { validateUniqueNameInCollection } = require('../helpers.js');
 const { getMemberQuery } = require('../members/helpers.js');
-const { BANDS, MEMBERS, pathBldr } = require('../paths.js');
-const { fetchBand, addMemberToBand } = require('./helpers.js');
+const MemberData = require('../members/MemberData.js');
+const { BANDS, MEMBERS, pathBldr, bandPath } = require('../paths.js');
+const { fetchBand, addMemberToBand, addNewOrGetExistingUsers } = require('./helpers.js');
 
 exports.createBand = async (request, uid) => {
 	const { name, members } = request.body;
+	try {
+		return firestore.runTransaction(async t => {
+			const bands = await t.get(firestore.collection(BANDS));
 
-	// check for duplicates
-	await validateUniqueNameInCollection(BANDS, name, 'band');
+			// check for duplicates
+			validateUniqueNameInCollection(bands.docs, name, 'band');
 
-	// create new band
-	const band = await firestore
-		.collection(BANDS)
-		.add({ name })
-		.then(doc => doc.get());
+			// create new band
+			const newBandRef = firestore.collection(BANDS).doc();
+			t.set(newBandRef, { name });
 
-	// add band members
-	const newMembers = await Promise.all(
-		members.map(async member => await addMemberToBand(band, member)),
-	);
+			// add members
+			const memberUsers = await Promise.all(
+				members.map(async member => await addNewOrGetExistingUsers(member)),
+			);
 
-	// return new band
-	return newMembers.find(member => member.data().uid === uid).data().band;
+			const newMembers = memberUsers.map((user, i) => {
+				const newMemberRef = newBandRef.collection(MEMBERS).doc();
+				const member = new MemberData(newMemberRef.id, user, members[i], newBandRef, name);
+				t.set(newMemberRef, { ...member });
+				return member;
+			});
+
+			return newMembers.find(member => member.uid === uid);
+		});
+	} catch (error) {}
 };
 
 exports.getUserBands = async (request, uid) => {
 	const memberQuery = await getMemberQuery(uid);
-	const userBands = memberQuery.docs.map(doc => doc.data().band);
+	const userBands = memberQuery.docs.map(doc => doc.data());
 	return userBands;
 };
 
@@ -35,19 +45,15 @@ exports.editBand = async (request, uid) => {
 	const bandId = request.params.bandId;
 	const newName = request.body.name;
 
-	//
 	return await firestore.runTransaction(async t => {
-		const band = await fetchBand(bandId);
-		const members = await band.ref.collection(MEMBERS).get();
+		const bandRef = firestore.doc(bandPath(bandId));
+		const members = await t.get(bandRef.collection(MEMBERS));
 
-		t.update(band.ref, { name: newName });
-		members.docs.forEach(member =>
-			t.update(member.ref, { band: { ...member.data().band, name: newName } }),
-		);
+		// update band & member data, (will we need to do this for tours, dates etc?)
+		t.update(bandRef, { name: newName });
+		members.docs.forEach(member => t.update(member.ref, { ...member.data(), bandName: newName }));
 
-		return await getMemberQuery(uid).then(query =>
-			query.docs.find(member => member.data().band.id === bandId).data(),
-		);
+		return members.docs.find(member => member.data().bandId === bandId).data();
 	});
 };
 

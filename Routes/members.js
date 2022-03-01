@@ -18,7 +18,6 @@ module.exports = function (app) {
 			const newMember = await authorizeAdmin(addBandMember)(req);
 			res.send(newMember);
 		} catch (error) {
-			console.log(error);
 			res.status(400).json(error);
 		}
 	});
@@ -32,20 +31,10 @@ module.exports = function (app) {
 		}
 	});
 
-	app.put('/bands/:bandId/members/:memberId'),
-		async (req, res) => {
-			try {
-				const updatedMember = await authorizeOwner()(req);
-				res.send(updatedMember);
-			} catch (error) {
-				res.status(400).json(error);
-			}
-		};
-
-	app.delete('bands/:bandId/members/:memberId', async (req, res) => {
+	app.delete('/bands/:bandId/members/:memberId', async (req, res) => {
 		try {
 			await authorizeOwner(removeBandMember)(req);
-			res.send(204).json('sucess');
+			res.status(204);
 		} catch (error) {
 			res.status(400).json(error);
 		}

@@ -3,11 +3,17 @@
 <!-- 1. Authorize with JWT to return uid (use auth/authAPI.authorize() HOF) -->
 <!-- 2. Filter a list of bands where user is a member -->
 <!-- 3. When band is selected, assign user role. (user role included with bandData) -->
-<!-- 4. create owner permissions HOF -->
-<!-- 5. create admin permissions HOF -->
+<!-- 4. create owner permissions HOF (authorizeOwner) -->
+<!-- 5. create admin permissions HOF (authorizeAdmin) -->
+<!-- created member permissions HOF (authorizeMember) -->
 
 6. implement band members routes & views
-7. update all member instances when user changes name or deletes self
+
+- - addBandMember contains unique email validation, calls bandAPI.addMemberToBand()
+  - removeBandMember prevents owner from being deleted
+  - changeMemberRole() automatically swap ownership if req.body.role === owner
+
+7. update all member instances when user changes name or deletes self (INCOMPLETE)
 
 **Band User Roles**
 

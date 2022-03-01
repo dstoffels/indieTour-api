@@ -1,9 +1,7 @@
 const { firestore, auth } = require('../firebase.js');
 
-const validateUniqueNameInCollection = async (path, name, type = 'item') => {
-	const snapshot = await firestore.collection(path).get();
-	const docs = snapshot.docs.map(doc => doc.data());
-	if (docs.find(item => item.name === name)) {
+const validateUniqueNameInCollection = (array, name, type = 'item') => {
+	if (array.find(item => item.data().name === name)) {
 		throw {
 			code: `${type}/duplicate`,
 			message: capitalize(`${aOrAn(type)} of that name already exists.`),
