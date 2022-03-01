@@ -1,9 +1,10 @@
-const toursAPI = require('../Firebase/firestore//tours/toursAPI.js');
+const { createTour } = require('../Firebase/firestore//tours/toursAPI.js');
+const { authorizeRoles, ADMIN_ROLES } = require('../Firebase/firestore/bands/bandAuth.js');
 
 module.exports = function (app) {
 	app.post(`/bands/:bandId/tours/new`, async (req, res) => {
 		try {
-			const newTour = await toursAPI.createTour(req.params.bandId, req.body);
+			const newTour = await authorizeRoles(createTour, ADMIN_ROLES)(req);
 			res.send(newTour);
 		} catch (error) {
 			res.status(400).json(error);

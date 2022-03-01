@@ -15,7 +15,9 @@ function pathBldr() {
 }
 
 const bandPath = bandId => `${BANDS}/${bandId}`;
+const bandMembersPath = bandId => `${BANDS}/${bandId}/${MEMBERS}`;
 const memberPath = (bandId, memberId) => `${BANDS}/${bandId}/${MEMBERS}/${memberId}`;
+const bandToursPath = bandId => `${BANDS}/${bandId}/${TOURS}`;
 const tourPath = (bandId, tourId) => `${bandPath(bandId)}/${TOURS}/${tourId}`;
 const datePath = (bandId, tourId, dateId) => `${tourPath(bandId, tourId)}/${DATES}/${dateId}`;
 
@@ -34,7 +36,9 @@ module.exports = {
 	pathBldr,
 	getPath,
 	bandPath,
+	bandMembersPath,
 	memberPath,
+	bandToursPath,
 	tourPath,
 	datePath,
 };

@@ -6,14 +6,13 @@
 <!-- 4. create owner permissions HOF (authorizeOwner) -->
 <!-- 5. create admin permissions HOF (authorizeAdmin) -->
 <!-- created member permissions HOF (authorizeMember) -->
-
-6. implement band members routes & views
-
+<!-- 6. implement band members routes & views
 - - addBandMember contains unique email validation, calls bandAPI.addMemberToBand()
   - removeBandMember prevents owner from being deleted
-  - changeMemberRole() automatically swap ownership if req.body.role === owner
+  - changeMemberRole() automatically swap ownership if req.body.role === owner -->
 
 7. update all member instances when user changes name or deletes self (INCOMPLETE)
+8. implement band tours routes & views
 
 **Band User Roles**
 

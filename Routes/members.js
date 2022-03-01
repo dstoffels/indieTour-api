@@ -40,7 +40,6 @@ module.exports = function (app) {
 			await authorizeRoles(removeBandMember, [OWNER])(req);
 			res.status(204).send();
 		} catch (error) {
-			console.log(error);
 			res.status(400).json(error);
 		}
 	});

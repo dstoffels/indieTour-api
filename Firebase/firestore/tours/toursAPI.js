@@ -1,20 +1,23 @@
 const { firestore } = require('../../firebase.js');
-const { pathBldr, BANDS, TOURS, getPath } = require('../paths.js');
+const { validateUniqueNameInCollection } = require('../helpers.js');
+const { pathBldr, BANDS, TOURS, getPath, bandToursPath } = require('../paths.js');
 
-const fetchTours = async bandId => {
-	const tours = await firestore.collection(pathBldr(BANDS, bandId, TOURS)).get();
-	return tours.docs.map(doc => doc.data());
-};
+exports.createTour = async (request, authUser) => {
+	const { bandId } = request.params;
+	const tour = request.body;
+	const toursRef = firestore.collection(bandToursPath(bandId));
+	const newTourRef = toursRef.doc();
 
-exports.createTour = async (bandId, tourData) => {
-	const tours = await fetchTours(bandId);
-	if (tours.find(tour => tour.name === tourData.name)) {
-		throw { message: 'A tour of that name already exists' };
-	} else {
-		const bandTours = firestore.collection(pathBldr(BANDS, bandId, TOURS));
-		const tourDoc = await bandTours.add(tourData);
-		return getPath(tourDoc);
-	}
+	return await firestore.runTransaction(async t => {
+		const tours = await t.get(toursRef);
+
+		//validate tour name
+		validateUniqueNameInCollection(tours.docs, tour.name, 'tour');
+
+		t.set(newTourRef, tour);
+
+		return { message: `Created tour: ${tour.name}` };
+	});
 };
 
 exports.getAllTours = async (bandId, res) => {

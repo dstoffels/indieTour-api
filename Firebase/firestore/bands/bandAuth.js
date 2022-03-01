@@ -4,6 +4,7 @@ const { getMemberQuery } = require('../members/helpers.js');
 const OWNER = 'owner';
 const ADMIN = 'admin';
 const MEMBER = 'member';
+const ADMIN_ROLES = [OWNER, ADMIN];
 const ALL_ROLES = [OWNER, ADMIN, MEMBER];
 
 const validateMember = async (authUser, roles, bandId) => {
@@ -22,4 +23,4 @@ const authorizeRoles = (APIfn, roles) => async request => {
 	return await APIfn(request, authUser);
 };
 
-module.exports = { OWNER, ADMIN, MEMBER, ALL_ROLES, authorizeRoles };
+module.exports = { OWNER, ADMIN, MEMBER, ADMIN_ROLES, ALL_ROLES, authorizeRoles };
