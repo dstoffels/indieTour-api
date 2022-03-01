@@ -1,10 +1,11 @@
 const { firestore } = require('../../firebase.js');
 const { MEMBER, OWNER, ADMIN } = require('../bands/bandAuth.js');
-const { addMemberToBand } = require('../bands/helpers.js');
-const { validateUniqueEmailInCollection } = require('../helpers.js');
+const { addMemberToBand, addNewOrGetExistingUsers } = require('../bands/helpers.js');
+const { validateUniqueEmailInCollection, aOrAn } = require('../helpers.js');
 const { pathBldr, MEMBERS, BANDS, memberPath, bandPath } = require('../paths.js');
+const MemberData = require('./MemberData.js');
 
-exports.getBandMembers = async (request, uid) => {
+exports.getBandMembers = async (request, authUser) => {
 	const bandId = request.params.bandId;
 	const path = pathBldr(BANDS, bandId, MEMBERS);
 	return await firestore
@@ -17,52 +18,68 @@ exports.getBandMembers = async (request, uid) => {
 		);
 };
 
-exports.addBandMember = async (request, uid) => {
+exports.addBandMember = async (request, authUser) => {
 	const bandId = request.params.bandId;
 	const member = request.body;
 	const path = pathBldr(BANDS, bandId, MEMBERS);
 
-	await validateUniqueEmailInCollection(path, member.email, MEMBER);
+	return await firestore.runTransaction(async t => {
+		const band = await t.get(firestore.doc(bandPath(bandId)));
+		const members = await t.get(firestore.collection(path));
 
-	const band = await firestore.doc(pathBldr(BANDS, bandId)).get();
+		validateUniqueEmailInCollection(members.docs, member.email, MEMBER);
 
-	await addMemberToBand(band, member);
+		// create new member
+
+		// TODO: bundle this in to own function?
+		const newMemberRef = firestore.collection(path).doc();
+		const user = await addNewOrGetExistingUsers(member);
+		const newMember = new MemberData(newMemberRef.id, user, member, band.ref, band.data().name);
+		t.set(newMemberRef, { ...newMember });
+
+		return newMember;
+	});
 };
 
-exports.removeBandMember = async (request, uid) => {
+exports.removeBandMember = async (request, authUser) => {
 	const { bandId, memberId } = request.params;
 
-	return await firestore.runTransaction(async t => {
+	await firestore.runTransaction(async t => {
 		const member = await t.get(firestore.doc(memberPath(bandId, memberId)));
 
 		if (!member.exists) throw { code: '/members/does-not-exist' };
 
 		// owner cannot be removed
-		if (member.data().band.memberRole !== OWNER) {
+		if (member.data().role !== OWNER) {
 			t.delete(member.ref);
-			return { message: 'success' };
 		} else throw { code: 'members/cannot-delete-owner' };
 	});
 };
 
-exports.changeMemberRole = async (request, uid) => {
+exports.changeMemberRole = async (request, authUser) => {
 	const { bandId, memberId } = request.params;
 	const { role } = request.body;
 
 	return await firestore.runTransaction(async t => {
 		const member = await t.get(firestore.doc(memberPath(bandId, memberId)));
 
-		if (member.data().band.memberRole === OWNER) throw { code: 'cannot-change-owner-role' };
+		// validate operation
+		if (member.data().role === OWNER)
+			throw {
+				code: 'cannot-change-owner-role',
+				message: 'Instead, transfer ownership to another member',
+			};
 
-		// switch owners
+		// switch owners if member is being assigned the owner
 		if (role === OWNER) {
-			const members = await t.get(firestore.collection(bandPath(bandId) + MEMBERS));
-			const owner = members.docs.find(member => member.data().band.role === OWNER);
-			t.update(owner.ref, { band: { memberRole: ADMIN } });
+			const members = await t.get(firestore.collection(pathBldr(BANDS, bandId, MEMBERS)));
+			const owner = members.docs.find(member => member.data().role === OWNER);
+			t.update(owner.ref, { role: ADMIN });
 		}
 
 		// update member
-		t.update(member.ref, { band: { memberRole: role } });
+		t.update(member.ref, { role });
+		return { message: `${member.data().email} is now ${aOrAn(role)}` };
 	});
 };
 

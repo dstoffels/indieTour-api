@@ -13,7 +13,7 @@ const {
 
 module.exports = function (app) {
 	app.get('/bands/:bandId/members', async (req, res) => {
-		const bandMembers = await authorizeRoles(getBandMembers, [ALL_ROLES])(req);
+		const bandMembers = await authorizeRoles(getBandMembers, ALL_ROLES)(req);
 		res.send(bandMembers);
 	});
 
@@ -38,8 +38,9 @@ module.exports = function (app) {
 	app.delete('/bands/:bandId/members/:memberId', async (req, res) => {
 		try {
 			await authorizeRoles(removeBandMember, [OWNER])(req);
-			res.status(204);
+			res.status(204).send();
 		} catch (error) {
+			console.log(error);
 			res.status(400).json(error);
 		}
 	});

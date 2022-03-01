@@ -29,6 +29,7 @@ exports.createBand = async (request, authUser) => {
 			);
 
 			const newMembers = memberUsers.map((user, i) => {
+				// TODO: bundle this in to own function?
 				const newMemberRef = newBandRef.collection(MEMBERS).doc();
 				const member = new MemberData(newMemberRef.id, user, members[i], newBandRef, name);
 				t.set(newMemberRef, { ...member });

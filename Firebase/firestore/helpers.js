@@ -10,10 +10,8 @@ const validateUniqueNameInCollection = (array, name, type = 'item') => {
 };
 
 // TODO: combine into once validateUniqueItem function with item['key'] === ...
-const validateUniqueEmailInCollection = async (path, email, type = 'item') => {
-	const snapshot = await firestore.collection(path).get();
-	const docs = snapshot.docs.map(doc => doc.data());
-	if (docs.find(item => item.email === email)) {
+const validateUniqueEmailInCollection = (array, email, type = 'item') => {
+	if (array.find(item => item.data().email === email)) {
 		throw {
 			code: `${type}/duplicate`,
 			message: capitalize(`${aOrAn(type)} with that email already exists.`),
