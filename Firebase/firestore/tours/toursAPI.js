@@ -1,6 +1,6 @@
 const { firestore } = require('../../firebase.js');
 const { validateUniqueNameInCollection } = require('../helpers.js');
-const { pathBldr, BANDS, TOURS, getPath, bandToursPath } = require('../paths.js');
+const { bandToursPath } = require('../paths.js');
 
 exports.createTour = async (request, authUser) => {
 	const { bandId } = request.params;
@@ -11,7 +11,6 @@ exports.createTour = async (request, authUser) => {
 	return await firestore.runTransaction(async t => {
 		const tours = await t.get(toursRef);
 
-		//validate tour name
 		validateUniqueNameInCollection(tours.docs, tour.name, 'tour');
 
 		t.set(newTourRef, tour);
@@ -20,7 +19,8 @@ exports.createTour = async (request, authUser) => {
 	});
 };
 
-exports.getAllTours = async (bandId, res) => {
-	const tours = await fetchTours(bandId);
-	res.send(tours);
-};
+exports.getAllTours = async (request, authUser) =>
+	await firestore
+		.collection(bandToursPath(request.params.bandId))
+		.get()
+		.then(tours => tours.docs.map(tour => tour.data()));
