@@ -1,9 +1,9 @@
 const { firestore } = require('../../firebase.js');
 const { MEMBER, OWNER, ADMIN } = require('../bands/bandAuth.js');
-const { addMemberToBand, addNewOrGetExistingUsers } = require('../bands/helpers.js');
+const { addMemberToBand, addNewOrGetExistingUser } = require('../bands/helpers.js');
 const { validateUniqueEmailInCollection, aOrAn } = require('../helpers.js');
 const { pathBldr, MEMBERS, BANDS, memberPath, bandPath } = require('../paths.js');
-const MemberData = require('./MemberData.js');
+const { Member } = require('./Member.js');
 
 exports.getBandMembers = async (request, authUser) => {
 	const bandId = request.params.bandId;
@@ -30,12 +30,9 @@ exports.addBandMember = async (request, authUser) => {
 		validateUniqueEmailInCollection(members.docs, member.email, MEMBER);
 
 		// create new member
-
-		// TODO: bundle this in to own function?
-		const newMemberRef = firestore.collection(path).doc();
-		const user = await addNewOrGetExistingUsers(member);
-		const newMember = new MemberData(newMemberRef.id, user, member, band.ref, band.data().name);
-		t.set(newMemberRef, { ...newMember });
+		const user = await addNewOrGetExistingUser(member);
+		const newMember = new Member(band.ref, user, member, band.data().name);
+		t.set(newMember.ref, newMember.data);
 
 		return newMember;
 	});

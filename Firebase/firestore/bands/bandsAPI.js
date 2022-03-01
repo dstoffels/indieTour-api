@@ -1,10 +1,11 @@
 const { firestore } = require('../../firebase.js');
 const { validateUniqueNameInCollection } = require('../helpers.js');
 const { getMemberQuery } = require('../members/helpers.js');
-const MemberData = require('../members/MemberData.js');
-const { BANDS, MEMBERS, pathBldr, bandPath } = require('../paths.js');
+const { Member } = require('../members/Member.js');
+const { BANDS, MEMBERS, pathBldr, bandPath, TOURS } = require('../paths.js');
+const { Tour } = require('../tours/Tour.js');
 const { OWNER } = require('./bandAuth.js');
-const { addNewOrGetExistingUsers } = require('./helpers.js');
+const { addNewOrGetExistingUser } = require('./helpers.js');
 
 exports.createBand = async (request, authUser) => {
 	const { name, members } = request.body;
@@ -25,18 +26,25 @@ exports.createBand = async (request, authUser) => {
 
 			// add members
 			const memberUsers = await Promise.all(
-				members.map(async member => await addNewOrGetExistingUsers(member)),
+				members.map(async member => await addNewOrGetExistingUser(member)),
 			);
 
 			const newMembers = memberUsers.map((user, i) => {
-				// TODO: bundle this in to own function?
-				const newMemberRef = newBandRef.collection(MEMBERS).doc();
-				const member = new MemberData(newMemberRef.id, user, members[i], newBandRef, name);
-				t.set(newMemberRef, { ...member });
+				const member = new Member(newBandRef, user, members[i], name);
+				t.set(member.ref, member.data);
 				return member;
 			});
 
-			return newMembers.find(member => member.uid === authUser.uid);
+			// add general tour
+			const tour = new Tour(
+				newBandRef,
+				'General',
+				'For rogue tour dates, one-offs or laziness :)',
+				true,
+			);
+			t.set(tour.ref, tour.data);
+
+			return newMembers.find(member => member.data.uid === authUser.uid).data;
 		});
 	} catch (error) {}
 };

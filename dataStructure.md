@@ -1,18 +1,21 @@
 **Tasks**
 
-<!-- 1. Authorize with JWT to return uid (use auth/authAPI.authorize() HOF) -->
-<!-- 2. Filter a list of bands where user is a member -->
-<!-- 3. When band is selected, assign user role. (user role included with bandData) -->
-<!-- 4. create owner permissions HOF (authorizeOwner) -->
-<!-- 5. create admin permissions HOF (authorizeAdmin) -->
+<!-- - Authorize with JWT to return uid (use auth/authAPI.authorize() HOF) -->
+<!-- - Filter a list of bands where user is a member -->
+<!-- - When band is selected, assign user role. (user role included with bandData) -->
+<!-- - create owner permissions HOF (authorizeOwner) -->
+<!-- - create admin permissions HOF (authorizeAdmin) -->
 <!-- created member permissions HOF (authorizeMember) -->
-<!-- 6. implement band members routes & views
-- - addBandMember contains unique email validation, calls bandAPI.addMemberToBand()
-  - removeBandMember prevents owner from being deleted
-  - changeMemberRole() automatically swap ownership if req.body.role === owner -->
+<!-- - implement band members routes & views
+    - - addBandMember contains unique email validation, calls bandAPI.addMemberToBand()
+      - removeBandMember prevents owner from being deleted
+      - changeMemberRole() automatically swap ownership if req.body.role === owner -->
 
-7. update all member instances when user changes name or deletes self (INCOMPLETE)
-8. implement band tours routes & views
+- update all member instances when user changes name or deletes self (INCOMPLETE)
+- implement band tours routes & views
+
+- - will there be an auto-generated "general tour" so users can add dates without affiliating it with a tour?
+  -
 
 **Band User Roles**
 
@@ -35,7 +38,7 @@
 - Band
   - name: str
   - members: collection[memberObj]
-    (what if owner wants to change band name? will have to update bands/:bandId/members[each.band.name] and anywhere else the band name is stored in subcollections)
+    <!-- (what if owner wants to change band name? will have to update bands/:bandId/members[each.band.name] and anywhere else the band name is stored in subcollections) check! -->
   - tours: collection[tourObj]
 
 **Member object structure**
@@ -64,10 +67,18 @@
 **Tour object structure**
 
 - Tour
-  - name: str
-  - startDate: str
-  - endDate: str
+  (do we even care about start/endDates?)
+
+  - name: str (unique)
+  - notes: str
   - dates: collection[dateObj]
+  - startDate: str ???
+    (cannot overlap endDate of other tours?)
+  - endDate: str ???
+    (cannot overlap startDate of other tours?)
+  - isPerpetual: bool
+    (always false except for general tour)
+  - isArchived: bool
 
 **Date object structure**
 
@@ -76,6 +87,7 @@
   - type: str enum(show, off, travel)
   - isConfirmed: bool
   - location: str
+  - venue: ref or map ?? (allow user to store shallow venue details in the event they don't want to save the venue to the database?)
   - destination : str
   - potentialVenues: collection[prospectObj]
   - schedule: collection[timeslotObj]
