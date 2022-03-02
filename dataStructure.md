@@ -11,11 +11,10 @@
       - removeBandMember prevents owner from being deleted
       - changeMemberRole() automatically swap ownership if req.body.role === owner -->
 
-- update all member instances when user changes name or deletes self (INCOMPLETE)
 - implement band tours routes & views
+<!-- - - will there be an auto-generated "general tour" so users can add dates without affiliating it with a tour? (yes there is) -->
 
-- - will there be an auto-generated "general tour" so users can add dates without affiliating it with a tour?
-  -
+- update all member instances when user changes name or deletes self (INCOMPLETE)
 
 **Band User Roles**
 

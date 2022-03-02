@@ -33,3 +33,9 @@ exports.editTour = async (request, authUser) => {
 	await tourRef.update(tour);
 	return { message: `Updated tour: ${tour.name}` };
 };
+
+exports.deleteTour = async (request, authUser) => {
+	const { bandId, tourId } = request.params;
+	const tourRef = firestore.doc(tourPath(bandId, tourId));
+	await tourRef.delete();
+};

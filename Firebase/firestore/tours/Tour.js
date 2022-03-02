@@ -1,4 +1,4 @@
-const { TOURS } = require('../paths.js');
+const { TOURS, getPath } = require('../paths.js');
 
 class Tour {
 	constructor(bandRef, name, notes, isPerpetual = false) {
@@ -8,6 +8,7 @@ class Tour {
 			notes,
 			isPerpetual,
 			isArchived: false,
+			path: getPath(this.ref),
 		};
 	}
 }
