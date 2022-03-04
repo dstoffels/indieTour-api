@@ -1,0 +1,522 @@
+{
+	"info": {
+		"_postman_id": "3d89b53b-40a0-418d-bb8e-5f2e9905c8c9",
+		"name": "indieTour",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "Auth",
+			"item": [
+				{
+					"name": "Create_User",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "1234",
+								"type": "text",
+								"disabled": true
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"email\": \"dan.stoffels@gmail.com\",\r\n    \"password\": \"password\",\r\n    \"displayName\": \"danimal\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://127.0.0.1:3002/auth/new-user",
+							"protocol": "http",
+							"host": [
+								"127",
+								"0",
+								"0",
+								"1"
+							],
+							"port": "3002",
+							"path": [
+								"auth",
+								"new-user"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Login",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"email\": \"dan.stoffels@gmail.com\",\r\n    \"password\": \"password\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://127.0.0.1:3002/auth/login",
+							"protocol": "http",
+							"host": [
+								"127",
+								"0",
+								"0",
+								"1"
+							],
+							"port": "3002",
+							"path": [
+								"auth",
+								"login"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Bands",
+			"item": [
+				{
+					"name": "Create_Band",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "auth",
+								"value": "eyJhbGciOiJSUzI1NiIsImtpZCI6ImNmNWQ4ZTc0ZjNjNDg2ZWU1MDNkNWVlYzkzYTEwMWM2NGJhY2Y3ZGEiLCJ0eXAiOiJKV1QifQ.eyJuYW1lIjoiZGFuaW1hbCIsImlzcyI6Imh0dHBzOi8vc2VjdXJldG9rZW4uZ29vZ2xlLmNvbS9pbmRpZXRvdXItOWJmN2IiLCJhdWQiOiJpbmRpZXRvdXItOWJmN2IiLCJhdXRoX3RpbWUiOjE2NDYxODc4NDIsInVzZXJfaWQiOiJzU2F2VkxqY1N3Wlc4c1pQcjRHYjY4V2ZiSEEzIiwic3ViIjoic1NhdlZMamNTd1pXOHNaUHI0R2I2OFdmYkhBMyIsImlhdCI6MTY0NjE4Nzg0MiwiZXhwIjoxNjQ2MTkxNDQyLCJlbWFpbCI6ImRhbi5zdG9mZmVsc0BnbWFpbC5jb20iLCJlbWFpbF92ZXJpZmllZCI6ZmFsc2UsImZpcmViYXNlIjp7ImlkZW50aXRpZXMiOnsiZW1haWwiOlsiZGFuLnN0b2ZmZWxzQGdtYWlsLmNvbSJdfSwic2lnbl9pbl9wcm92aWRlciI6InBhc3N3b3JkIn19.pYXcMVcyMucDeJPIQ4FxJfGAZCOgv5uiBLD0_34L-k9Us_jlshdxBNUJpBaO42Zz7MLGKezTTNNb0cxYX0dIxn21X578ExaNZypB1t7YsaAtXtj8lNXX1fnUyoIzsDXFUVsVGn-IKa9FWoxBQ3G0ls3w8Q-IwJ317kZnk49LGQxIj49UMUbJmNkoGio_KrXPlcC8YtqPed2vTcnShrq_EQeyd3ny5Vt9BZkjRi8NgKKH45N8oNJkMemYxI7LlJAmV7mK7Tn1Lj-xxQAUcJV8-c0pVg6mqa4ZO3gRlVPrZsCHv0xkG7ZCFZ7YuN1G_5eWHetJTMrk_FM50EHV1BiL1g",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"name\": \"Brett Newski\",\r\n    \"members\":[\r\n        {\r\n            \"displayName\": \"sprecher\",\r\n            \"email\": \"snto123as@gmail.com\",\r\n            \"role\": \"admin\"\r\n        },\r\n        {\r\n            \"displayName\": \"dwight\",\r\n            \"email\": \"dschrutewekijasdl12@gmail.com\",\r\n            \"role\": \"member\"\r\n        }\r\n    ]\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://127.0.0.1:3002/bands/new",
+							"protocol": "http",
+							"host": [
+								"127",
+								"0",
+								"0",
+								"1"
+							],
+							"port": "3002",
+							"path": [
+								"bands",
+								"new"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get_User_Bands",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "auth",
+								"value": "eyJhbGciOiJSUzI1NiIsImtpZCI6ImNmNWQ4ZTc0ZjNjNDg2ZWU1MDNkNWVlYzkzYTEwMWM2NGJhY2Y3ZGEiLCJ0eXAiOiJKV1QifQ.eyJuYW1lIjoiZGFuaW1hbCIsImlzcyI6Imh0dHBzOi8vc2VjdXJldG9rZW4uZ29vZ2xlLmNvbS9pbmRpZXRvdXItOWJmN2IiLCJhdWQiOiJpbmRpZXRvdXItOWJmN2IiLCJhdXRoX3RpbWUiOjE2NDYxNDI2NDUsInVzZXJfaWQiOiJzU2F2VkxqY1N3Wlc4c1pQcjRHYjY4V2ZiSEEzIiwic3ViIjoic1NhdlZMamNTd1pXOHNaUHI0R2I2OFdmYkhBMyIsImlhdCI6MTY0NjE0MjY0NSwiZXhwIjoxNjQ2MTQ2MjQ1LCJlbWFpbCI6ImRhbi5zdG9mZmVsc0BnbWFpbC5jb20iLCJlbWFpbF92ZXJpZmllZCI6ZmFsc2UsImZpcmViYXNlIjp7ImlkZW50aXRpZXMiOnsiZW1haWwiOlsiZGFuLnN0b2ZmZWxzQGdtYWlsLmNvbSJdfSwic2lnbl9pbl9wcm92aWRlciI6InBhc3N3b3JkIn19.bmRc7VQxA0W9aQpbXUj04VvMXp5KPLi60DWfWhtijKaIXVs-gqv10jvcTxpLwkEMJEQ_vwMHcx_aJCKrZVAM8usYrG27Srdc3iTN-YkP1_DpAoPePNfPRGVvYVm8l4KKAnqQo5owfCGZg4OGNuwwwBrHPnM-V37HmZHgfLPN9iqFCLn0pqGP0iOQuzAkmNt9EMQK47eA7HrYepaMNey6H2mwsA0P8vVBxnD9-LY5x52nEAiONXo-JAEizuwoZrTXz6s5bvLzZYzktPb2d7xhRKf6m6boLt7vHJ3v9g8MCATBX9y1i8UJAnM5ZsxlEUY0THp4JfRfHBu6xqQOZsllAQ",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "http://127.0.0.1:3002/bands",
+							"protocol": "http",
+							"host": [
+								"127",
+								"0",
+								"0",
+								"1"
+							],
+							"port": "3002",
+							"path": [
+								"bands"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Edit_Band",
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "auth",
+								"value": "eyJhbGciOiJSUzI1NiIsImtpZCI6ImNmNWQ4ZTc0ZjNjNDg2ZWU1MDNkNWVlYzkzYTEwMWM2NGJhY2Y3ZGEiLCJ0eXAiOiJKV1QifQ.eyJuYW1lIjoiZGFuaW1hbCIsImlzcyI6Imh0dHBzOi8vc2VjdXJldG9rZW4uZ29vZ2xlLmNvbS9pbmRpZXRvdXItOWJmN2IiLCJhdWQiOiJpbmRpZXRvdXItOWJmN2IiLCJhdXRoX3RpbWUiOjE2NDYxNDI2NDUsInVzZXJfaWQiOiJzU2F2VkxqY1N3Wlc4c1pQcjRHYjY4V2ZiSEEzIiwic3ViIjoic1NhdlZMamNTd1pXOHNaUHI0R2I2OFdmYkhBMyIsImlhdCI6MTY0NjE0MjY0NSwiZXhwIjoxNjQ2MTQ2MjQ1LCJlbWFpbCI6ImRhbi5zdG9mZmVsc0BnbWFpbC5jb20iLCJlbWFpbF92ZXJpZmllZCI6ZmFsc2UsImZpcmViYXNlIjp7ImlkZW50aXRpZXMiOnsiZW1haWwiOlsiZGFuLnN0b2ZmZWxzQGdtYWlsLmNvbSJdfSwic2lnbl9pbl9wcm92aWRlciI6InBhc3N3b3JkIn19.bmRc7VQxA0W9aQpbXUj04VvMXp5KPLi60DWfWhtijKaIXVs-gqv10jvcTxpLwkEMJEQ_vwMHcx_aJCKrZVAM8usYrG27Srdc3iTN-YkP1_DpAoPePNfPRGVvYVm8l4KKAnqQo5owfCGZg4OGNuwwwBrHPnM-V37HmZHgfLPN9iqFCLn0pqGP0iOQuzAkmNt9EMQK47eA7HrYepaMNey6H2mwsA0P8vVBxnD9-LY5x52nEAiONXo-JAEizuwoZrTXz6s5bvLzZYzktPb2d7xhRKf6m6boLt7vHJ3v9g8MCATBX9y1i8UJAnM5ZsxlEUY0THp4JfRfHBu6xqQOZsllAQ",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"name\": \"Brett Newski\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://127.0.0.1:3002/bands/9bOp2cxZcBNtFUl5yh98",
+							"protocol": "http",
+							"host": [
+								"127",
+								"0",
+								"0",
+								"1"
+							],
+							"port": "3002",
+							"path": [
+								"bands",
+								"9bOp2cxZcBNtFUl5yh98"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Delete_Band",
+					"request": {
+						"method": "DELETE",
+						"header": [
+							{
+								"key": "auth",
+								"value": "eyJhbGciOiJSUzI1NiIsImtpZCI6ImNmNWQ4ZTc0ZjNjNDg2ZWU1MDNkNWVlYzkzYTEwMWM2NGJhY2Y3ZGEiLCJ0eXAiOiJKV1QifQ.eyJuYW1lIjoiZGFuaW1hbCIsImlzcyI6Imh0dHBzOi8vc2VjdXJldG9rZW4uZ29vZ2xlLmNvbS9pbmRpZXRvdXItOWJmN2IiLCJhdWQiOiJpbmRpZXRvdXItOWJmN2IiLCJhdXRoX3RpbWUiOjE2NDYxNDI2NDUsInVzZXJfaWQiOiJzU2F2VkxqY1N3Wlc4c1pQcjRHYjY4V2ZiSEEzIiwic3ViIjoic1NhdlZMamNTd1pXOHNaUHI0R2I2OFdmYkhBMyIsImlhdCI6MTY0NjE0MjY0NSwiZXhwIjoxNjQ2MTQ2MjQ1LCJlbWFpbCI6ImRhbi5zdG9mZmVsc0BnbWFpbC5jb20iLCJlbWFpbF92ZXJpZmllZCI6ZmFsc2UsImZpcmViYXNlIjp7ImlkZW50aXRpZXMiOnsiZW1haWwiOlsiZGFuLnN0b2ZmZWxzQGdtYWlsLmNvbSJdfSwic2lnbl9pbl9wcm92aWRlciI6InBhc3N3b3JkIn19.bmRc7VQxA0W9aQpbXUj04VvMXp5KPLi60DWfWhtijKaIXVs-gqv10jvcTxpLwkEMJEQ_vwMHcx_aJCKrZVAM8usYrG27Srdc3iTN-YkP1_DpAoPePNfPRGVvYVm8l4KKAnqQo5owfCGZg4OGNuwwwBrHPnM-V37HmZHgfLPN9iqFCLn0pqGP0iOQuzAkmNt9EMQK47eA7HrYepaMNey6H2mwsA0P8vVBxnD9-LY5x52nEAiONXo-JAEizuwoZrTXz6s5bvLzZYzktPb2d7xhRKf6m6boLt7vHJ3v9g8MCATBX9y1i8UJAnM5ZsxlEUY0THp4JfRfHBu6xqQOZsllAQ",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "http://127.0.0.1:3002/bands/udoeU7BdstGN8zK12EdZ/delete",
+							"protocol": "http",
+							"host": [
+								"127",
+								"0",
+								"0",
+								"1"
+							],
+							"port": "3002",
+							"path": [
+								"bands",
+								"udoeU7BdstGN8zK12EdZ",
+								"delete"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Members",
+			"item": [
+				{
+					"name": "Get_Band_Members",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "auth",
+								"value": "eyJhbGciOiJSUzI1NiIsImtpZCI6ImNmNWQ4ZTc0ZjNjNDg2ZWU1MDNkNWVlYzkzYTEwMWM2NGJhY2Y3ZGEiLCJ0eXAiOiJKV1QifQ.eyJuYW1lIjoiZGFuaW1hbCIsImlzcyI6Imh0dHBzOi8vc2VjdXJldG9rZW4uZ29vZ2xlLmNvbS9pbmRpZXRvdXItOWJmN2IiLCJhdWQiOiJpbmRpZXRvdXItOWJmN2IiLCJhdXRoX3RpbWUiOjE2NDYxNDI2NDUsInVzZXJfaWQiOiJzU2F2VkxqY1N3Wlc4c1pQcjRHYjY4V2ZiSEEzIiwic3ViIjoic1NhdlZMamNTd1pXOHNaUHI0R2I2OFdmYkhBMyIsImlhdCI6MTY0NjE0MjY0NSwiZXhwIjoxNjQ2MTQ2MjQ1LCJlbWFpbCI6ImRhbi5zdG9mZmVsc0BnbWFpbC5jb20iLCJlbWFpbF92ZXJpZmllZCI6ZmFsc2UsImZpcmViYXNlIjp7ImlkZW50aXRpZXMiOnsiZW1haWwiOlsiZGFuLnN0b2ZmZWxzQGdtYWlsLmNvbSJdfSwic2lnbl9pbl9wcm92aWRlciI6InBhc3N3b3JkIn19.bmRc7VQxA0W9aQpbXUj04VvMXp5KPLi60DWfWhtijKaIXVs-gqv10jvcTxpLwkEMJEQ_vwMHcx_aJCKrZVAM8usYrG27Srdc3iTN-YkP1_DpAoPePNfPRGVvYVm8l4KKAnqQo5owfCGZg4OGNuwwwBrHPnM-V37HmZHgfLPN9iqFCLn0pqGP0iOQuzAkmNt9EMQK47eA7HrYepaMNey6H2mwsA0P8vVBxnD9-LY5x52nEAiONXo-JAEizuwoZrTXz6s5bvLzZYzktPb2d7xhRKf6m6boLt7vHJ3v9g8MCATBX9y1i8UJAnM5ZsxlEUY0THp4JfRfHBu6xqQOZsllAQ",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "http://127.0.0.1:3002/bands/17DQsd6wflvSGWktbZsx/members",
+							"protocol": "http",
+							"host": [
+								"127",
+								"0",
+								"0",
+								"1"
+							],
+							"port": "3002",
+							"path": [
+								"bands",
+								"17DQsd6wflvSGWktbZsx",
+								"members"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Add_Band_Member",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "auth",
+								"value": "eyJhbGciOiJSUzI1NiIsImtpZCI6ImNmNWQ4ZTc0ZjNjNDg2ZWU1MDNkNWVlYzkzYTEwMWM2NGJhY2Y3ZGEiLCJ0eXAiOiJKV1QifQ.eyJuYW1lIjoiZGFuaW1hbCIsImlzcyI6Imh0dHBzOi8vc2VjdXJldG9rZW4uZ29vZ2xlLmNvbS9pbmRpZXRvdXItOWJmN2IiLCJhdWQiOiJpbmRpZXRvdXItOWJmN2IiLCJhdXRoX3RpbWUiOjE2NDYxNDI2NDUsInVzZXJfaWQiOiJzU2F2VkxqY1N3Wlc4c1pQcjRHYjY4V2ZiSEEzIiwic3ViIjoic1NhdlZMamNTd1pXOHNaUHI0R2I2OFdmYkhBMyIsImlhdCI6MTY0NjE0MjY0NSwiZXhwIjoxNjQ2MTQ2MjQ1LCJlbWFpbCI6ImRhbi5zdG9mZmVsc0BnbWFpbC5jb20iLCJlbWFpbF92ZXJpZmllZCI6ZmFsc2UsImZpcmViYXNlIjp7ImlkZW50aXRpZXMiOnsiZW1haWwiOlsiZGFuLnN0b2ZmZWxzQGdtYWlsLmNvbSJdfSwic2lnbl9pbl9wcm92aWRlciI6InBhc3N3b3JkIn19.bmRc7VQxA0W9aQpbXUj04VvMXp5KPLi60DWfWhtijKaIXVs-gqv10jvcTxpLwkEMJEQ_vwMHcx_aJCKrZVAM8usYrG27Srdc3iTN-YkP1_DpAoPePNfPRGVvYVm8l4KKAnqQo5owfCGZg4OGNuwwwBrHPnM-V37HmZHgfLPN9iqFCLn0pqGP0iOQuzAkmNt9EMQK47eA7HrYepaMNey6H2mwsA0P8vVBxnD9-LY5x52nEAiONXo-JAEizuwoZrTXz6s5bvLzZYzktPb2d7xhRKf6m6boLt7vHJ3v9g8MCATBX9y1i8UJAnM5ZsxlEUY0THp4JfRfHBu6xqQOZsllAQ",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"displayName\":\"Bronson\",\r\n    \"email\": \"bronsons123709123@aol.com\",\r\n    \"role\": \"member\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://127.0.0.1:3002/bands/udoeU7BdstGN8zK12EdZ/members",
+							"protocol": "http",
+							"host": [
+								"127",
+								"0",
+								"0",
+								"1"
+							],
+							"port": "3002",
+							"path": [
+								"bands",
+								"udoeU7BdstGN8zK12EdZ",
+								"members"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Remove_Member",
+					"request": {
+						"method": "DELETE",
+						"header": [
+							{
+								"key": "auth",
+								"value": "eyJhbGciOiJSUzI1NiIsImtpZCI6ImNmNWQ4ZTc0ZjNjNDg2ZWU1MDNkNWVlYzkzYTEwMWM2NGJhY2Y3ZGEiLCJ0eXAiOiJKV1QifQ.eyJuYW1lIjoiZGFuaW1hbCIsImlzcyI6Imh0dHBzOi8vc2VjdXJldG9rZW4uZ29vZ2xlLmNvbS9pbmRpZXRvdXItOWJmN2IiLCJhdWQiOiJpbmRpZXRvdXItOWJmN2IiLCJhdXRoX3RpbWUiOjE2NDYxNDI2NDUsInVzZXJfaWQiOiJzU2F2VkxqY1N3Wlc4c1pQcjRHYjY4V2ZiSEEzIiwic3ViIjoic1NhdlZMamNTd1pXOHNaUHI0R2I2OFdmYkhBMyIsImlhdCI6MTY0NjE0MjY0NSwiZXhwIjoxNjQ2MTQ2MjQ1LCJlbWFpbCI6ImRhbi5zdG9mZmVsc0BnbWFpbC5jb20iLCJlbWFpbF92ZXJpZmllZCI6ZmFsc2UsImZpcmViYXNlIjp7ImlkZW50aXRpZXMiOnsiZW1haWwiOlsiZGFuLnN0b2ZmZWxzQGdtYWlsLmNvbSJdfSwic2lnbl9pbl9wcm92aWRlciI6InBhc3N3b3JkIn19.bmRc7VQxA0W9aQpbXUj04VvMXp5KPLi60DWfWhtijKaIXVs-gqv10jvcTxpLwkEMJEQ_vwMHcx_aJCKrZVAM8usYrG27Srdc3iTN-YkP1_DpAoPePNfPRGVvYVm8l4KKAnqQo5owfCGZg4OGNuwwwBrHPnM-V37HmZHgfLPN9iqFCLn0pqGP0iOQuzAkmNt9EMQK47eA7HrYepaMNey6H2mwsA0P8vVBxnD9-LY5x52nEAiONXo-JAEizuwoZrTXz6s5bvLzZYzktPb2d7xhRKf6m6boLt7vHJ3v9g8MCATBX9y1i8UJAnM5ZsxlEUY0THp4JfRfHBu6xqQOZsllAQ",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "http://127.0.0.1:3002/bands/udoeU7BdstGN8zK12EdZ/members/Ru4kY5WeE8EwLYc3vy84",
+							"protocol": "http",
+							"host": [
+								"127",
+								"0",
+								"0",
+								"1"
+							],
+							"port": "3002",
+							"path": [
+								"bands",
+								"udoeU7BdstGN8zK12EdZ",
+								"members",
+								"Ru4kY5WeE8EwLYc3vy84"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Edit_Member_Role",
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "auth",
+								"value": "eyJhbGciOiJSUzI1NiIsImtpZCI6ImNmNWQ4ZTc0ZjNjNDg2ZWU1MDNkNWVlYzkzYTEwMWM2NGJhY2Y3ZGEiLCJ0eXAiOiJKV1QifQ.eyJuYW1lIjoiZGFuaW1hbCIsImlzcyI6Imh0dHBzOi8vc2VjdXJldG9rZW4uZ29vZ2xlLmNvbS9pbmRpZXRvdXItOWJmN2IiLCJhdWQiOiJpbmRpZXRvdXItOWJmN2IiLCJhdXRoX3RpbWUiOjE2NDYxNDI2NDUsInVzZXJfaWQiOiJzU2F2VkxqY1N3Wlc4c1pQcjRHYjY4V2ZiSEEzIiwic3ViIjoic1NhdlZMamNTd1pXOHNaUHI0R2I2OFdmYkhBMyIsImlhdCI6MTY0NjE0MjY0NSwiZXhwIjoxNjQ2MTQ2MjQ1LCJlbWFpbCI6ImRhbi5zdG9mZmVsc0BnbWFpbC5jb20iLCJlbWFpbF92ZXJpZmllZCI6ZmFsc2UsImZpcmViYXNlIjp7ImlkZW50aXRpZXMiOnsiZW1haWwiOlsiZGFuLnN0b2ZmZWxzQGdtYWlsLmNvbSJdfSwic2lnbl9pbl9wcm92aWRlciI6InBhc3N3b3JkIn19.bmRc7VQxA0W9aQpbXUj04VvMXp5KPLi60DWfWhtijKaIXVs-gqv10jvcTxpLwkEMJEQ_vwMHcx_aJCKrZVAM8usYrG27Srdc3iTN-YkP1_DpAoPePNfPRGVvYVm8l4KKAnqQo5owfCGZg4OGNuwwwBrHPnM-V37HmZHgfLPN9iqFCLn0pqGP0iOQuzAkmNt9EMQK47eA7HrYepaMNey6H2mwsA0P8vVBxnD9-LY5x52nEAiONXo-JAEizuwoZrTXz6s5bvLzZYzktPb2d7xhRKf6m6boLt7vHJ3v9g8MCATBX9y1i8UJAnM5ZsxlEUY0THp4JfRfHBu6xqQOZsllAQ",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"role\": \"owner\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://127.0.0.1:3002/bands/kIjTW8tsGBlKrdoEmHfo/members/99Pqor7FkrjBK28U8hAA/role",
+							"protocol": "http",
+							"host": [
+								"127",
+								"0",
+								"0",
+								"1"
+							],
+							"port": "3002",
+							"path": [
+								"bands",
+								"kIjTW8tsGBlKrdoEmHfo",
+								"members",
+								"99Pqor7FkrjBK28U8hAA",
+								"role"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Tours",
+			"item": [
+				{
+					"name": "Create_Tour",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "auth",
+								"value": "eyJhbGciOiJSUzI1NiIsImtpZCI6ImNmNWQ4ZTc0ZjNjNDg2ZWU1MDNkNWVlYzkzYTEwMWM2NGJhY2Y3ZGEiLCJ0eXAiOiJKV1QifQ.eyJuYW1lIjoiZGFuaW1hbCIsImlzcyI6Imh0dHBzOi8vc2VjdXJldG9rZW4uZ29vZ2xlLmNvbS9pbmRpZXRvdXItOWJmN2IiLCJhdWQiOiJpbmRpZXRvdXItOWJmN2IiLCJhdXRoX3RpbWUiOjE2NDYxODc4NDIsInVzZXJfaWQiOiJzU2F2VkxqY1N3Wlc4c1pQcjRHYjY4V2ZiSEEzIiwic3ViIjoic1NhdlZMamNTd1pXOHNaUHI0R2I2OFdmYkhBMyIsImlhdCI6MTY0NjE4Nzg0MiwiZXhwIjoxNjQ2MTkxNDQyLCJlbWFpbCI6ImRhbi5zdG9mZmVsc0BnbWFpbC5jb20iLCJlbWFpbF92ZXJpZmllZCI6ZmFsc2UsImZpcmViYXNlIjp7ImlkZW50aXRpZXMiOnsiZW1haWwiOlsiZGFuLnN0b2ZmZWxzQGdtYWlsLmNvbSJdfSwic2lnbl9pbl9wcm92aWRlciI6InBhc3N3b3JkIn19.pYXcMVcyMucDeJPIQ4FxJfGAZCOgv5uiBLD0_34L-k9Us_jlshdxBNUJpBaO42Zz7MLGKezTTNNb0cxYX0dIxn21X578ExaNZypB1t7YsaAtXtj8lNXX1fnUyoIzsDXFUVsVGn-IKa9FWoxBQ3G0ls3w8Q-IwJ317kZnk49LGQxIj49UMUbJmNkoGio_KrXPlcC8YtqPed2vTcnShrq_EQeyd3ny5Vt9BZkjRi8NgKKH45N8oNJkMemYxI7LlJAmV7mK7Tn1Lj-xxQAUcJV8-c0pVg6mqa4ZO3gRlVPrZsCHv0xkG7ZCFZ7YuN1G_5eWHetJTMrk_FM50EHV1BiL1g",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"name\":\"HiFi DIY\",\r\n    \"notes\": \"US spring tour\",\r\n    \"startDate\": \"\",\r\n    \"endDate\": \"\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://127.0.0.1:3002/bands/93BpgRcN98Qw8ZERXWRA/tours",
+							"protocol": "http",
+							"host": [
+								"127",
+								"0",
+								"0",
+								"1"
+							],
+							"port": "3002",
+							"path": [
+								"bands",
+								"93BpgRcN98Qw8ZERXWRA",
+								"tours"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get_All_Tours",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "auth",
+								"value": "eyJhbGciOiJSUzI1NiIsImtpZCI6ImNmNWQ4ZTc0ZjNjNDg2ZWU1MDNkNWVlYzkzYTEwMWM2NGJhY2Y3ZGEiLCJ0eXAiOiJKV1QifQ.eyJuYW1lIjoiZGFuaW1hbCIsImlzcyI6Imh0dHBzOi8vc2VjdXJldG9rZW4uZ29vZ2xlLmNvbS9pbmRpZXRvdXItOWJmN2IiLCJhdWQiOiJpbmRpZXRvdXItOWJmN2IiLCJhdXRoX3RpbWUiOjE2NDYxODc4NDIsInVzZXJfaWQiOiJzU2F2VkxqY1N3Wlc4c1pQcjRHYjY4V2ZiSEEzIiwic3ViIjoic1NhdlZMamNTd1pXOHNaUHI0R2I2OFdmYkhBMyIsImlhdCI6MTY0NjE4Nzg0MiwiZXhwIjoxNjQ2MTkxNDQyLCJlbWFpbCI6ImRhbi5zdG9mZmVsc0BnbWFpbC5jb20iLCJlbWFpbF92ZXJpZmllZCI6ZmFsc2UsImZpcmViYXNlIjp7ImlkZW50aXRpZXMiOnsiZW1haWwiOlsiZGFuLnN0b2ZmZWxzQGdtYWlsLmNvbSJdfSwic2lnbl9pbl9wcm92aWRlciI6InBhc3N3b3JkIn19.pYXcMVcyMucDeJPIQ4FxJfGAZCOgv5uiBLD0_34L-k9Us_jlshdxBNUJpBaO42Zz7MLGKezTTNNb0cxYX0dIxn21X578ExaNZypB1t7YsaAtXtj8lNXX1fnUyoIzsDXFUVsVGn-IKa9FWoxBQ3G0ls3w8Q-IwJ317kZnk49LGQxIj49UMUbJmNkoGio_KrXPlcC8YtqPed2vTcnShrq_EQeyd3ny5Vt9BZkjRi8NgKKH45N8oNJkMemYxI7LlJAmV7mK7Tn1Lj-xxQAUcJV8-c0pVg6mqa4ZO3gRlVPrZsCHv0xkG7ZCFZ7YuN1G_5eWHetJTMrk_FM50EHV1BiL1g",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "http://127.0.0.1:3002/bands/HGQn7ZEEslG6BUceZHPX/tours",
+							"protocol": "http",
+							"host": [
+								"127",
+								"0",
+								"0",
+								"1"
+							],
+							"port": "3002",
+							"path": [
+								"bands",
+								"HGQn7ZEEslG6BUceZHPX",
+								"tours"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Edit_Tour",
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "auth",
+								"value": "eyJhbGciOiJSUzI1NiIsImtpZCI6ImNmNWQ4ZTc0ZjNjNDg2ZWU1MDNkNWVlYzkzYTEwMWM2NGJhY2Y3ZGEiLCJ0eXAiOiJKV1QifQ.eyJuYW1lIjoiZGFuaW1hbCIsImlzcyI6Imh0dHBzOi8vc2VjdXJldG9rZW4uZ29vZ2xlLmNvbS9pbmRpZXRvdXItOWJmN2IiLCJhdWQiOiJpbmRpZXRvdXItOWJmN2IiLCJhdXRoX3RpbWUiOjE2NDYxNDI2NDUsInVzZXJfaWQiOiJzU2F2VkxqY1N3Wlc4c1pQcjRHYjY4V2ZiSEEzIiwic3ViIjoic1NhdlZMamNTd1pXOHNaUHI0R2I2OFdmYkhBMyIsImlhdCI6MTY0NjE0MjY0NSwiZXhwIjoxNjQ2MTQ2MjQ1LCJlbWFpbCI6ImRhbi5zdG9mZmVsc0BnbWFpbC5jb20iLCJlbWFpbF92ZXJpZmllZCI6ZmFsc2UsImZpcmViYXNlIjp7ImlkZW50aXRpZXMiOnsiZW1haWwiOlsiZGFuLnN0b2ZmZWxzQGdtYWlsLmNvbSJdfSwic2lnbl9pbl9wcm92aWRlciI6InBhc3N3b3JkIn19.bmRc7VQxA0W9aQpbXUj04VvMXp5KPLi60DWfWhtijKaIXVs-gqv10jvcTxpLwkEMJEQ_vwMHcx_aJCKrZVAM8usYrG27Srdc3iTN-YkP1_DpAoPePNfPRGVvYVm8l4KKAnqQo5owfCGZg4OGNuwwwBrHPnM-V37HmZHgfLPN9iqFCLn0pqGP0iOQuzAkmNt9EMQK47eA7HrYepaMNey6H2mwsA0P8vVBxnD9-LY5x52nEAiONXo-JAEizuwoZrTXz6s5bvLzZYzktPb2d7xhRKf6m6boLt7vHJ3v9g8MCATBX9y1i8UJAnM5ZsxlEUY0THp4JfRfHBu6xqQOZsllAQ",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"name\":\"Hi-Fi DIY\",\r\n    \"notes\": \"US spring tour\",\r\n    \"isArchived\": false\r\n\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://127.0.0.1:3002/bands/HGQn7ZEEslG6BUceZHPX/tours/hS1QzGrElzJdlQQpe9MV",
+							"protocol": "http",
+							"host": [
+								"127",
+								"0",
+								"0",
+								"1"
+							],
+							"port": "3002",
+							"path": [
+								"bands",
+								"HGQn7ZEEslG6BUceZHPX",
+								"tours",
+								"hS1QzGrElzJdlQQpe9MV"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Delete_Tour",
+					"request": {
+						"method": "DELETE",
+						"header": [
+							{
+								"key": "auth",
+								"value": "eyJhbGciOiJSUzI1NiIsImtpZCI6ImNmNWQ4ZTc0ZjNjNDg2ZWU1MDNkNWVlYzkzYTEwMWM2NGJhY2Y3ZGEiLCJ0eXAiOiJKV1QifQ.eyJuYW1lIjoiZGFuaW1hbCIsImlzcyI6Imh0dHBzOi8vc2VjdXJldG9rZW4uZ29vZ2xlLmNvbS9pbmRpZXRvdXItOWJmN2IiLCJhdWQiOiJpbmRpZXRvdXItOWJmN2IiLCJhdXRoX3RpbWUiOjE2NDYxODc4NDIsInVzZXJfaWQiOiJzU2F2VkxqY1N3Wlc4c1pQcjRHYjY4V2ZiSEEzIiwic3ViIjoic1NhdlZMamNTd1pXOHNaUHI0R2I2OFdmYkhBMyIsImlhdCI6MTY0NjE4Nzg0MiwiZXhwIjoxNjQ2MTkxNDQyLCJlbWFpbCI6ImRhbi5zdG9mZmVsc0BnbWFpbC5jb20iLCJlbWFpbF92ZXJpZmllZCI6ZmFsc2UsImZpcmViYXNlIjp7ImlkZW50aXRpZXMiOnsiZW1haWwiOlsiZGFuLnN0b2ZmZWxzQGdtYWlsLmNvbSJdfSwic2lnbl9pbl9wcm92aWRlciI6InBhc3N3b3JkIn19.pYXcMVcyMucDeJPIQ4FxJfGAZCOgv5uiBLD0_34L-k9Us_jlshdxBNUJpBaO42Zz7MLGKezTTNNb0cxYX0dIxn21X578ExaNZypB1t7YsaAtXtj8lNXX1fnUyoIzsDXFUVsVGn-IKa9FWoxBQ3G0ls3w8Q-IwJ317kZnk49LGQxIj49UMUbJmNkoGio_KrXPlcC8YtqPed2vTcnShrq_EQeyd3ny5Vt9BZkjRi8NgKKH45N8oNJkMemYxI7LlJAmV7mK7Tn1Lj-xxQAUcJV8-c0pVg6mqa4ZO3gRlVPrZsCHv0xkG7ZCFZ7YuN1G_5eWHetJTMrk_FM50EHV1BiL1g",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "http://127.0.0.1:3002/bands/HGQn7ZEEslG6BUceZHPX/tours/miDX3uPg41AtfNirDjLg",
+							"protocol": "http",
+							"host": [
+								"127",
+								"0",
+								"0",
+								"1"
+							],
+							"port": "3002",
+							"path": [
+								"bands",
+								"HGQn7ZEEslG6BUceZHPX",
+								"tours",
+								"miDX3uPg41AtfNirDjLg"
+							],
+							"query": [
+								{
+									"key": "auth",
+									"value": "eyJhbGciOiJSUzI1NiIsImtpZCI6ImNmNWQ4ZTc0ZjNjNDg2ZWU1MDNkNWVlYzkzYTEwMWM2NGJhY2Y3ZGEiLCJ0eXAiOiJKV1QifQ.eyJuYW1lIjoiZGFuaW1hbCIsImlzcyI6Imh0dHBzOi8vc2VjdXJldG9rZW4uZ29vZ2xlLmNvbS9pbmRpZXRvdXItOWJmN2IiLCJhdWQiOiJpbmRpZXRvdXItOWJmN2IiLCJhdXRoX3RpbWUiOjE2NDYxODc4NDIsInVzZXJfaWQiOiJzU2F2VkxqY1N3Wlc4c1pQcjRHYjY4V2ZiSEEzIiwic3ViIjoic1NhdlZMamNTd1pXOHNaUHI0R2I2OFdmYkhBMyIsImlhdCI6MTY0NjE4Nzg0MiwiZXhwIjoxNjQ2MTkxNDQyLCJlbWFpbCI6ImRhbi5zdG9mZmVsc0BnbWFpbC5jb20iLCJlbWFpbF92ZXJpZmllZCI6ZmFsc2UsImZpcmViYXNlIjp7ImlkZW50aXRpZXMiOnsiZW1haWwiOlsiZGFuLnN0b2ZmZWxzQGdtYWlsLmNvbSJdfSwic2lnbl9pbl9wcm92aWRlciI6InBhc3N3b3JkIn19.pYXcMVcyMucDeJPIQ4FxJfGAZCOgv5uiBLD0_34L-k9Us_jlshdxBNUJpBaO42Zz7MLGKezTTNNb0cxYX0dIxn21X578ExaNZypB1t7YsaAtXtj8lNXX1fnUyoIzsDXFUVsVGn-IKa9FWoxBQ3G0ls3w8Q-IwJ317kZnk49LGQxIj49UMUbJmNkoGio_KrXPlcC8YtqPed2vTcnShrq_EQeyd3ny5Vt9BZkjRi8NgKKH45N8oNJkMemYxI7LlJAmV7mK7Tn1Lj-xxQAUcJV8-c0pVg6mqa4ZO3gRlVPrZsCHv0xkG7ZCFZ7YuN1G_5eWHetJTMrk_FM50EHV1BiL1g",
+									"disabled": true
+								}
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		}
+	]
+}
