@@ -17,14 +17,14 @@ const generateAuthData = userCredentials => {
 
 // TODO: if pw === 'password', force user to change before logging in??
 exports.createEmailUser = async ({ email, password, displayName }) => {
-	const newUserCredentials = await createUserWithEmailAndPassword(auth, email, password);
+	const newUserCredentials = await createUserWithEmailAndPassword(firebaseAuth, email, password);
 	await sendEmailVerification(newUserCredentials.user);
 	await updateProfile(newUserCredentials.user, { displayName });
 	return generateAuthData(newUserCredentials);
 };
 
 exports.emailLogin = async ({ email, password }) => {
-	const userCredentials = await signInWithEmailAndPassword(auth, email, password);
+	const userCredentials = await signInWithEmailAndPassword(firebaseAuth, email, password);
 	return generateAuthData(userCredentials);
 };
 

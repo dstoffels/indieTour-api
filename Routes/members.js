@@ -28,7 +28,7 @@ module.exports = function (app) {
 
 	app.put('/bands/:bandId/members/:memberId/role', async (req, res) => {
 		try {
-			const updatedMember = await authorizeRoles(changeMemberRole, [OWNER])(req);
+			const updatedMember = await authorizeRoles(changeMemberRole, [OWNER, ADMIN])(req);
 			res.send(updatedMember);
 		} catch (error) {
 			res.status(400).json(error);
@@ -37,7 +37,7 @@ module.exports = function (app) {
 
 	app.delete('/bands/:bandId/members/:memberId', async (req, res) => {
 		try {
-			await authorizeRoles(removeBandMember, [OWNER])(req);
+			await authorizeRoles(removeBandMember, [OWNER, ADMIN])(req);
 			res.status(204).send();
 		} catch (error) {
 			res.status(400).json(error);

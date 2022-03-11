@@ -61,6 +61,7 @@ exports.changeMemberRole = async (request, authUser) => {
 		const member = await t.get(firestore.doc(memberPath(bandId, memberId)));
 
 		// validate operation
+		// FIXME: update to edit all member data (during a user displayName change)
 		if (member.data().role === OWNER)
 			throw {
 				code: 'cannot-change-owner-role',
