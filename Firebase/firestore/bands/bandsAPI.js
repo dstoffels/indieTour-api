@@ -38,19 +38,19 @@ exports.createBand = async (request, authUser) => {
 			// add general tour
 			const tour = new Tour(
 				newBandRef,
-				'General',
+				'General Tour',
 				'For rogue tour dates, one-offs or laziness :)',
 				true,
 			);
 			t.set(tour.ref, tour.data);
 
-			return newMembers.find(member => member.data.uid === authUser.uid).data;
+			return newMembers.find(member => member.data.email === authUser.email).data;
 		});
 	} catch (error) {}
 };
 
 exports.getUserBands = async (request, authUser) => {
-	const memberQuery = await getMemberQuery(authUser.uid);
+	const memberQuery = await getMemberQuery(authUser.email);
 	const userBands = memberQuery.docs.map(doc => doc.data());
 	return userBands;
 };

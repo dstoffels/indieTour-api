@@ -1,13 +1,15 @@
 const { USERS } = require('../paths.js');
 
 class User {
-	constructor(authUser, requiresNewPW = true) {
-		const { uid } = authUser;
+	constructor(authUser, hasValidPW = false) {
+		const { displayName, email, emailVerified } = authUser;
 		this.data = {
-			uid,
-			currentTour: null,
-			currentMember: null,
-			requiresNewPW,
+			displayName,
+			email,
+			activeTour: null,
+			activeMember: null,
+			emailVerified,
+			hasValidPW,
 		};
 	}
 }

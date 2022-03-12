@@ -1,5 +1,5 @@
 const { firestore } = require('../../firebase.js');
 const { MEMBERS } = require('../paths.js');
 
-exports.getMemberQuery = async uid =>
-	await firestore.collectionGroup(MEMBERS).where('uid', '==', uid).get();
+exports.getMemberQuery = async email =>
+	await firestore.collectionGroup(MEMBERS).where('email', '==', email).get();

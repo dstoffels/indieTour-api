@@ -1,4 +1,5 @@
-const { auth, firebaseAuth, firestore } = require('../firebase.js');
+const { auth, firebaseAuth } = require('../firebase.js');
+const usersAPI = require('../firestore/users/usersAPI.js');
 const {
 	createUserWithEmailAndPassword,
 	signInWithEmailAndPassword,
@@ -20,7 +21,11 @@ exports.createEmailUser = async ({ email, password, displayName }) => {
 	const newUserCredentials = await createUserWithEmailAndPassword(firebaseAuth, email, password);
 	await sendEmailVerification(newUserCredentials.user);
 	await updateProfile(newUserCredentials.user, { displayName });
-	return generateAuthData(newUserCredentials);
+	const user = await usersAPI.createUser(
+		{ body: { hasValidPW: password === 'password' ? false : true } },
+		newUserCredentials.user,
+	);
+	return user;
 };
 
 exports.emailLogin = async ({ email, password }) => {
