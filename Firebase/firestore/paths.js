@@ -1,6 +1,7 @@
 // ROOT PATHS
 const VENUES = '/venues';
 const BANDS = '/bands';
+const USERS = '/users';
 
 // SUB PATHS
 const MEMBERS = 'members';
@@ -28,6 +29,7 @@ function getPath(doc) {
 module.exports = {
 	VENUES,
 	BANDS,
+	USERS,
 	MEMBERS,
 	TOURS,
 	DATES,

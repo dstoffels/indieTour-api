@@ -56,7 +56,7 @@ exports.getUserBands = async (request, authUser) => {
 };
 
 exports.editBand = async (request, authUser) => {
-	const bandId = request.params.bandId;
+	const { bandId } = request.params;
 	const newName = request.body.name;
 
 	return await firestore.runTransaction(async t => {
