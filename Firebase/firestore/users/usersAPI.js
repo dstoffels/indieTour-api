@@ -16,7 +16,9 @@ exports.getUser = async (request, authUser) => {
 
 exports.editUser = async (request, authUser) => {
 	const user = await this.getUser(request, authUser);
+	console.log(request.body);
 	await user.ref.set({ ...user.data(), ...request.body });
 	const updatedUser = await user.ref.get();
+	// console.log(updatedUser.data());
 	return updatedUser.data();
 };

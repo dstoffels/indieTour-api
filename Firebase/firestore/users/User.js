@@ -2,7 +2,7 @@ const { USERS } = require('../paths.js');
 
 class User {
 	constructor(authUser, hasValidPW = false) {
-		const { displayName, email, emailVerified } = authUser;
+		const { email, displayName, emailVerified } = authUser;
 		this.data = {
 			displayName,
 			email,

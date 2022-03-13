@@ -1,6 +1,6 @@
 {
 	"name": "indietour-api",
-	"version": "1.0.2",
+	"version": "0.1.2",
 	"description": "backend app for indieTour",
 	"main": "index.js",
 	"scripts": {

@@ -2,7 +2,7 @@ const { authorize } = require('../Firebase/auth/authAPI.js');
 const usersAPI = require('../Firebase/firestore/users/usersAPI.js');
 
 module.exports = function (app) {
-	app.post('/users/new', async (req, res) => {
+	app.post('/user', async (req, res) => {
 		try {
 			const user = await authorize(usersAPI.createUser)(req);
 			res.send(user);
