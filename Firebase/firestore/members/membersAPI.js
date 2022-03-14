@@ -6,7 +6,7 @@ const { pathBldr, MEMBERS, BANDS, memberPath, bandPath } = require('../paths.js'
 const { Member } = require('./Member.js');
 
 exports.getBandMembers = async (request, authUser) => {
-	const bandId = request.params.bandId;
+	const { bandId } = request.params;
 	const path = pathBldr(BANDS, bandId, MEMBERS);
 	return await firestore
 		.collection(path)

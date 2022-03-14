@@ -13,8 +13,13 @@ const {
 
 module.exports = function (app) {
 	app.get('/bands/:bandId/members', async (req, res) => {
-		const bandMembers = await authorizeRoles(getBandMembers, ALL_ROLES)(req);
-		res.send(bandMembers);
+		try {
+			const bandMembers = await authorizeRoles(getBandMembers, ALL_ROLES)(req);
+			res.send(bandMembers);
+		} catch (error) {
+			res.status(400).json(error);
+			console.log(error);
+		}
 	});
 
 	app.post('/bands/:bandId/members', async (req, res) => {
@@ -23,6 +28,7 @@ module.exports = function (app) {
 			res.send(newMember);
 		} catch (error) {
 			res.status(400).json(error);
+			console.log(error);
 		}
 	});
 

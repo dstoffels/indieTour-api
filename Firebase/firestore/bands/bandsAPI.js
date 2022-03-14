@@ -28,7 +28,6 @@ exports.createBand = async (request, authUser) => {
 			const memberUsers = await Promise.all(
 				members.map(async member => await addNewOrGetExistingUser(member)),
 			);
-
 			const newMembers = memberUsers.map((user, i) => {
 				const member = new Member(newBandRef, user, members[i], name);
 				t.set(member.ref, member.data);
