@@ -56,18 +56,49 @@ exports.getUserBands = async (request, authUser) => {
 
 exports.editBand = async (request, authUser) => {
 	const { bandId } = request.params;
-	const newName = request.body.name;
+	const { name, members } = request.body;
 
-	return await firestore.runTransaction(async t => {
-		const bandRef = firestore.doc(bandPath(bandId));
-		const members = await t.get(bandRef.collection(MEMBERS));
+	try {
+		return await firestore.runTransaction(async t => {
+			const bandRef = firestore.doc(bandPath(bandId));
+			const curMemberSnap = await firestore
+				.collectionGroup(MEMBERS)
+				.where('bandId', '==', bandId)
+				.get();
 
-		// update band & member data, (will we need to do this for tours, dates etc?)
-		t.update(bandRef, { name: newName });
-		members.docs.forEach(member => t.update(member.ref, { ...member.data(), bandName: newName }));
+			t.set(bandRef, { name });
 
-		return members.docs.find(member => member.data().bandId === bandId).data();
-	});
+			// compare incoming members list, update if current member exists, delete if not
+			const curMembers = curMemberSnap.docs.map(doc => {
+				const curMember = doc.data();
+				curMember.role === OWNER && t.set(doc.ref, { ...curMember, bandName: name });
+				const newMember = members.find(mbr => curMember.email === mbr.email);
+				Boolean(newMember)
+					? t.set(doc.ref, { ...curMember, ...newMember, bandName: name })
+					: curMember.role !== OWNER && t.delete(doc.ref);
+				return curMember;
+			});
+
+			// Add new members, create new user for member if necessary
+			members.forEach(async member => {
+				const curMember = curMembers.find(curMbr => {
+					return member.email === curMbr.email;
+				});
+				if (!curMember) {
+					const user = await addNewOrGetExistingUser(member);
+					const newMember = new Member(bandRef, user, member, name);
+					t.set(newMember.ref, newMember.data);
+					return null;
+				}
+			});
+
+			return null;
+
+			// return curMemberSnap.docs.find(member => member. === bandId).data();
+		});
+	} catch (error) {
+		console.log(error);
+	}
 };
 
 exports.deleteBand = async (request, authUser) =>
