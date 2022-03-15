@@ -80,25 +80,17 @@ exports.editBand = async (request, authUser) => {
 			});
 
 			// Add new members, create new user for member if necessary
-			members.forEach(async member => {
-				const curMember = curMembers.find(curMbr => {
-					return member.email === curMbr.email;
-				});
+			// for loop necessary to avoid 'committed writebatch' error from a foreach
+			for (let i = 0; i < members.length; i++) {
+				const curMember = curMembers.find(curMbr => members[i].email === curMbr.email);
 				if (!curMember) {
-					const user = await addNewOrGetExistingUser(member);
-					const newMember = new Member(bandRef, user, member, name);
+					const user = await addNewOrGetExistingUser(members[i]);
+					const newMember = new Member(bandRef, user, members[i], name);
 					t.set(newMember.ref, newMember.data);
-					return null;
 				}
-			});
-
-			return null;
-
-			// return curMemberSnap.docs.find(member => member. === bandId).data();
+			}
 		});
-	} catch (error) {
-		console.log(error);
-	}
+	} catch (error) {}
 };
 
 exports.deleteBand = async (request, authUser) =>
