@@ -2,7 +2,7 @@ const { firestore } = require('../../firebase.js');
 const { validateUniqueNameInCollection } = require('../helpers.js');
 const { getMemberQuery } = require('../members/helpers.js');
 const { Member } = require('../members/Member.js');
-const { BANDS, MEMBERS, pathBldr, bandPath, TOURS } = require('../paths.js');
+const { BANDS, MEMBERS, bandPath, bandMembersPath, bandToursPath } = require('../paths.js');
 const { Tour } = require('../tours/Tour.js');
 const { OWNER } = require('./bandAuth.js');
 const { addNewOrGetExistingUser } = require('./helpers.js');
@@ -51,7 +51,11 @@ exports.createBand = async (request, authUser) => {
 exports.getUserBands = async (request, authUser) => {
 	const memberQuery = await getMemberQuery(authUser.email);
 	const userBands = memberQuery.docs.map(doc => doc.data());
-	return userBands;
+	return userBands.sort((a, b) => {
+		if (a.bandName < b.bandName) return -1;
+		if (a.bandName > b.bandName) return 1;
+		return 0;
+	});
 };
 
 exports.editBand = async (request, authUser) => {
@@ -59,7 +63,7 @@ exports.editBand = async (request, authUser) => {
 	const { name, members } = request.body;
 
 	try {
-		return await firestore.runTransaction(async t => {
+		await firestore.runTransaction(async t => {
 			const bandRef = firestore.doc(bandPath(bandId));
 			const curMemberSnap = await firestore
 				.collectionGroup(MEMBERS)
@@ -90,8 +94,28 @@ exports.editBand = async (request, authUser) => {
 				}
 			}
 		});
+		return this.getUserBands(request, authUser);
 	} catch (error) {}
 };
 
-exports.deleteBand = async (request, authUser) =>
-	await firestore.doc(pathBldr(BANDS, request.params.bandId)).delete();
+/**
+ * Removes a band and its subcollective tours and members in the firstore db
+ * @param {Request} request
+ * @param {AuthorizedUser} authUser
+ * @returns the updated bands list for the authorized user
+ */
+exports.deleteBand = async (request, authUser) => {
+	const { bandId } = request.params;
+	await firestore.runTransaction(async t => {
+		const band = firestore.doc(bandPath(bandId));
+		const members = await firestore.collection(bandMembersPath(bandId)).get();
+		members.docs.forEach(doc => t.delete(doc.ref));
+
+		const tours = await firestore.collection(bandToursPath(bandId)).get();
+		tours.docs.forEach(doc => t.delete(doc.ref));
+
+		t.delete(band);
+	});
+	return this.getUserBands(request, authUser);
+};
+// await firestore.doc(pathBldr(BANDS, request.params.bandId)).delete();

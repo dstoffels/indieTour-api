@@ -32,10 +32,10 @@ module.exports = function (app) {
 		}
 	});
 
-	app.delete('/bands/:bandId/delete', async (req, res) => {
+	app.delete('/bands/:bandId', async (req, res) => {
 		try {
 			const result = await authorizeRoles(bandsAPI.deleteBand, [OWNER])(req);
-			res.status(204).json(result);
+			res.send(result);
 		} catch (error) {
 			res.status(400).json(error);
 		}

@@ -15,7 +15,7 @@ const validateMember = async (authUser, roles, bandId) => {
 		member => roles.includes(member.data().role) && member.data().bandId === bandId,
 	);
 
-	if (!validMember) throw { code: 'member unauthorized' };
+	if (!validMember) throw { code: `${authUser.email} is not authorized` };
 };
 
 const authorizeRoles = (APIfn, roles) => async request => {
