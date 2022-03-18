@@ -4,7 +4,6 @@ const { getMemberQuery } = require('../members/helpers.js');
 const { Member } = require('../members/Member.js');
 const { BANDS, MEMBERS, bandPath, bandMembersPath, bandToursPath, USERS } = require('../paths.js');
 const { Tour } = require('../tours/Tour.js');
-const { editUser } = require('../users/usersAPI.js');
 const { OWNER } = require('./bandAuth.js');
 const { addNewOrGetExistingUser } = require('./helpers.js');
 
@@ -66,20 +65,23 @@ exports.editBand = async (request, authUser) => {
 	const { bandId } = request.params;
 	const { name, members } = request.body;
 
+	let activeMember;
+	const bandRef = firestore.doc(bandPath(bandId));
+	const membersQuery = await firestore.collectionGroup(MEMBERS).where('bandId', '==', bandId);
+
 	try {
 		await firestore.runTransaction(async t => {
-			const bandRef = firestore.doc(bandPath(bandId));
-			const curMemberSnap = await firestore
-				.collectionGroup(MEMBERS)
-				.where('bandId', '==', bandId)
-				.get();
+			const membersSnap = await t.get(membersQuery);
 
 			t.set(bandRef, { name });
 
 			// compare incoming members list, update if current member exists, delete if not
-			const curMembers = curMemberSnap.docs.map(doc => {
+			const curMembers = membersSnap.docs.map(doc => {
 				const curMember = doc.data();
-				curMember.role === OWNER && t.set(doc.ref, { ...curMember, bandName: name });
+				if (curMember.email === authUser.email) activeMember = doc.ref;
+				// update owner member
+				curMember.role === OWNER && t.update(doc.ref, { bandName: name });
+
 				const newMember = members.find(mbr => curMember.email === mbr.email);
 				Boolean(newMember)
 					? t.set(doc.ref, { ...curMember, ...newMember, bandName: name })
@@ -98,7 +100,8 @@ exports.editBand = async (request, authUser) => {
 				}
 			}
 		});
-		return this.getUserBands(request, authUser);
+		return await activeMember.get().then(doc => doc.data());
+		// return this.getUserBands(request, authUser);
 	} catch (error) {}
 };
 
@@ -128,5 +131,5 @@ exports.deleteBand = async (request, authUser) => {
 		// delete band
 		t.delete(bandRef);
 	});
-	return this.getUserBands(request, authUser);
+	return await this.getUserBands(request, authUser);
 };

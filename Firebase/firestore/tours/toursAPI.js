@@ -43,7 +43,7 @@ exports.deleteTour = async (request, authUser) => {
 	const tourRef = firestore.doc(tourPath(bandId, tourId));
 	const bandToursRef = firestore.collection(bandToursPath(bandId));
 
-	return await firestore.runTransaction(async t => {
+	await firestore.runTransaction(async t => {
 		const tours = await t.get(bandToursRef);
 
 		// get dates from tour
@@ -51,7 +51,8 @@ exports.deleteTour = async (request, authUser) => {
 		// delete all timeslots
 		// delete all dates
 
-		await t.delete(tourRef);
-		return tours.docs.map(doc => doc.data());
+		t.delete(tourRef);
+		// return tours.docs.map(doc => doc.data());
 	});
+	return await bandToursRef.get().then(snap => snap.docs.map(doc => doc.data()));
 };
