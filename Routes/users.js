@@ -16,6 +16,7 @@ module.exports = function (app) {
 			const user = await authorize(usersAPI.getUser)(req);
 			res.send(user.data());
 		} catch (error) {
+			console.log(error);
 			res.send(error);
 		}
 	});

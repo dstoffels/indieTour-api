@@ -18,6 +18,7 @@ module.exports = function (app) {
 			res.send(newTour);
 		} catch (error) {
 			res.status(400).json(error);
+			console.log(error);
 		}
 	});
 
@@ -42,10 +43,12 @@ module.exports = function (app) {
 
 	app.delete('/bands/:bandId/tours/:tourId', async (req, res) => {
 		try {
-			await authorizeRoles(deleteTour, [OWNER])(req);
-			res.status(204).send();
+			const tours = await authorizeRoles(deleteTour, ADMIN_ROLES)(req);
+			console.log(tours);
+			res.send(tours);
 		} catch (error) {
-			res.status(400).send(error);
+			console.log(error);
+			res.send(error);
 		}
 	});
 };

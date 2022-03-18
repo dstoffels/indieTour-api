@@ -3,12 +3,14 @@ const {
 	OWNER,
 	ADMIN,
 	ALL_ROLES,
+	ADMIN_ROLES,
 } = require('../Firebase/firestore/bands/bandAuth.js');
 const {
 	getBandMembers,
 	addBandMember,
 	changeMemberRole,
 	removeBandMember,
+	updateMember,
 } = require('../Firebase/firestore/members/membersAPI.js');
 
 module.exports = function (app) {
@@ -24,7 +26,7 @@ module.exports = function (app) {
 
 	app.post('/bands/:bandId/members', async (req, res) => {
 		try {
-			const newMember = await authorizeRoles(addBandMember, [OWNER, ADMIN])(req);
+			const newMember = await authorizeRoles(addBandMember, ADMIN_ROLES)(req);
 			res.send(newMember);
 		} catch (error) {
 			res.status(400).json(error);
@@ -32,9 +34,18 @@ module.exports = function (app) {
 		}
 	});
 
+	app.put('/bands/:bandId/members/:memberId', async (req, res) => {
+		try {
+			const updatedMember = await authorizeRoles(updateMember, ADMIN_ROLES)(req);
+			res.send(updatedMember);
+		} catch (error) {
+			res.send(error);
+		}
+	});
+
 	app.put('/bands/:bandId/members/:memberId/role', async (req, res) => {
 		try {
-			const updatedMember = await authorizeRoles(changeMemberRole, [OWNER, ADMIN])(req);
+			const updatedMember = await authorizeRoles(changeMemberRole, ADMIN_ROLES)(req);
 			res.send(updatedMember);
 		} catch (error) {
 			res.status(400).json(error);
@@ -43,7 +54,7 @@ module.exports = function (app) {
 
 	app.delete('/bands/:bandId/members/:memberId', async (req, res) => {
 		try {
-			await authorizeRoles(removeBandMember, [OWNER, ADMIN])(req);
+			await authorizeRoles(removeBandMember, ADMIN_ROLES)(req);
 			res.status(204).send();
 		} catch (error) {
 			res.status(400).json(error);

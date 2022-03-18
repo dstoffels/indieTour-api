@@ -1,7 +1,9 @@
-const { USERS } = require('../paths.js');
+const { firestore } = require('../../firebase.js');
+const { USERS, getPath } = require('../paths.js');
 
 class User {
 	constructor(authUser, hasValidPW = false) {
+		this.ref = firestore.collection(USERS).doc();
 		const { email, displayName, emailVerified } = authUser;
 		this.data = {
 			displayName,
@@ -10,6 +12,7 @@ class User {
 			activeMember: null,
 			emailVerified,
 			hasValidPW,
+			path: getPath(this.ref),
 		};
 	}
 }

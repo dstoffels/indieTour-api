@@ -2,8 +2,9 @@ const { firestore } = require('../../firebase.js');
 const { validateUniqueNameInCollection } = require('../helpers.js');
 const { getMemberQuery } = require('../members/helpers.js');
 const { Member } = require('../members/Member.js');
-const { BANDS, MEMBERS, bandPath, bandMembersPath, bandToursPath } = require('../paths.js');
+const { BANDS, MEMBERS, bandPath, bandMembersPath, bandToursPath, USERS } = require('../paths.js');
 const { Tour } = require('../tours/Tour.js');
+const { editUser } = require('../users/usersAPI.js');
 const { OWNER } = require('./bandAuth.js');
 const { addNewOrGetExistingUser } = require('./helpers.js');
 
@@ -16,6 +17,7 @@ exports.createBand = async (request, authUser) => {
 	try {
 		return firestore.runTransaction(async t => {
 			const bands = await t.get(firestore.collection(BANDS));
+			const user = t.get(firestore.doc(`${USERS}/${authUser.uid}`));
 
 			// check for duplicates
 			validateUniqueNameInCollection(bands.docs, name, 'band');
@@ -23,16 +25,6 @@ exports.createBand = async (request, authUser) => {
 			// create new band
 			const newBandRef = firestore.collection(BANDS).doc();
 			t.set(newBandRef, { name });
-
-			// add members
-			const memberUsers = await Promise.all(
-				members.map(async member => await addNewOrGetExistingUser(member)),
-			);
-			const newMembers = memberUsers.map((user, i) => {
-				const member = new Member(newBandRef, user, members[i], name);
-				t.set(member.ref, member.data);
-				return member;
-			});
 
 			// add general tour
 			const tour = new Tour(
@@ -42,6 +34,18 @@ exports.createBand = async (request, authUser) => {
 				true,
 			);
 			t.set(tour.ref, tour.data);
+
+			// add members
+			const memberUsers = await Promise.all(
+				members.map(async member => await addNewOrGetExistingUser(member)),
+			);
+			const newMembers = memberUsers.map((user, i) => {
+				const member = new Member(newBandRef, user, members[i], name, tour);
+				t.set(member.ref, member.data);
+				return member;
+			});
+
+			// await editUser({ body: { activeTour: tour.data } }, authUser);
 
 			return newMembers.find(member => member.data.email === authUser.email).data;
 		});
@@ -106,16 +110,23 @@ exports.editBand = async (request, authUser) => {
  */
 exports.deleteBand = async (request, authUser) => {
 	const { bandId } = request.params;
+
+	const bandRef = firestore.doc(bandPath(bandId));
+	const membersRefs = firestore.collection(bandMembersPath(bandId));
+	const toursRefs = firestore.collection(bandToursPath(bandId));
+
 	await firestore.runTransaction(async t => {
-		const band = firestore.doc(bandPath(bandId));
-		const members = await firestore.collection(bandMembersPath(bandId)).get();
+		const members = await t.get(membersRefs);
+		const tours = await t.get(toursRefs);
+
+		// delete all members
 		members.docs.forEach(doc => t.delete(doc.ref));
 
-		const tours = await firestore.collection(bandToursPath(bandId)).get();
+		// delete all tours
 		tours.docs.forEach(doc => t.delete(doc.ref));
 
-		t.delete(band);
+		// delete band
+		t.delete(bandRef);
 	});
 	return this.getUserBands(request, authUser);
 };
-// await firestore.doc(pathBldr(BANDS, request.params.bandId)).delete();

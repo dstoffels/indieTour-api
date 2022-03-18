@@ -2,7 +2,7 @@ const { firestore } = require('../../firebase.js');
 const { MEMBER, OWNER, ADMIN } = require('../bands/bandAuth.js');
 const { addMemberToBand, addNewOrGetExistingUser } = require('../bands/helpers.js');
 const { validateUniqueEmailInCollection, aOrAn } = require('../helpers.js');
-const { pathBldr, MEMBERS, BANDS, memberPath, bandPath } = require('../paths.js');
+const { pathBldr, MEMBERS, BANDS, memberPath, bandPath, USERS } = require('../paths.js');
 const { Member } = require('./Member.js');
 
 exports.getBandMembers = async (request, authUser) => {
@@ -50,6 +50,26 @@ exports.removeBandMember = async (request, authUser) => {
 		if (member.data().role !== OWNER) {
 			t.delete(member.ref);
 		} else throw { code: 'members/cannot-delete-owner' };
+	});
+};
+
+exports.updateMember = async (request, authUser) => {
+	const { bandId, memberId } = request.params;
+	const newData = request.body;
+
+	const memberRef = firestore.doc(memberPath(bandId, memberId));
+	const userRef = firestore.collection(USERS).where('email', '==', authUser.email);
+
+	return await firestore.runTransaction(async t => {
+		const member = await t.get(memberRef);
+		const user = await t.get(userRef);
+
+		// update member
+		t.update(memberRef, newData);
+
+		// update user's activeMember with updated member data
+		t.update(user.docs[0].ref, { activeMember: member.data() });
+		return member;
 	});
 };
 

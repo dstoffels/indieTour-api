@@ -4,8 +4,7 @@ const { User } = require('./User.js');
 
 exports.createUser = async (request, authUser) => {
 	const user = new User(authUser, request.body.hasValidPW);
-	const ref = firestore.collection(USERS).doc();
-	await ref.create(user.data);
+	user.ref.create(user.data);
 	return user.data;
 };
 
@@ -16,7 +15,6 @@ exports.getUser = async (request, authUser) => {
 
 exports.editUser = async (request, authUser) => {
 	const user = await this.getUser(request, authUser);
-	await user.ref.set({ ...user.data(), ...request.body });
-	const updatedUser = await user.ref.get();
-	return updatedUser.data();
+	await user.ref.update(request.body);
+	return user.data();
 };

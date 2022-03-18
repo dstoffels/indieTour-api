@@ -28,7 +28,8 @@ module.exports = function (app) {
 			res.send(updatedBand);
 		} catch (error) {
 			console.log(error);
-			res.status(400).json(error);
+			res.status(400);
+			res.send(error);
 		}
 	});
 
@@ -37,6 +38,7 @@ module.exports = function (app) {
 			const result = await authorizeRoles(bandsAPI.deleteBand, [OWNER])(req);
 			res.send(result);
 		} catch (error) {
+			console.log(error);
 			res.status(400).json(error);
 		}
 	});

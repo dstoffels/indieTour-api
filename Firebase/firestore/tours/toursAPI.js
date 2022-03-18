@@ -1,6 +1,6 @@
 const { firestore } = require('../../firebase.js');
 const { validateUniqueNameInCollection } = require('../helpers.js');
-const { bandToursPath, bandPath, TOURS, tourPath } = require('../paths.js');
+const { bandToursPath, bandPath, TOURS, tourPath, MEMBERS, BANDS } = require('../paths.js');
 const { Tour } = require('./Tour.js');
 
 exports.createTour = async (request, authUser) => {
@@ -16,7 +16,7 @@ exports.createTour = async (request, authUser) => {
 		const newTour = new Tour(bandRef, name, notes);
 		t.set(newTour.ref, newTour.data);
 
-		return { message: `Created tour: ${name}` };
+		return newTour.data;
 	});
 };
 
@@ -28,14 +28,30 @@ exports.getBandTours = async (request, authUser) =>
 
 exports.editTour = async (request, authUser) => {
 	const { bandId, tourId } = request.params;
-	const tour = request.body;
-	const tourRef = firestore.doc(tourPath(bandId, tourId));
-	await tourRef.update(tour);
-	return { message: `Updated tour: ${tour.name}` };
+	const tourData = request.body;
+	return await firestore.runTransaction(async t => {
+		const tourRef = firestore.doc(tourPath(bandId, tourId));
+		const tour = await t.get(tourRef);
+		t.update(tourRef, tourData);
+		return tour.data();
+	});
 };
 
 exports.deleteTour = async (request, authUser) => {
 	const { bandId, tourId } = request.params;
+
 	const tourRef = firestore.doc(tourPath(bandId, tourId));
-	await tourRef.delete();
+	const bandToursRef = firestore.collection(bandToursPath(bandId));
+
+	return await firestore.runTransaction(async t => {
+		const tours = await t.get(bandToursRef);
+
+		// get dates from tour
+		// get all timeslots from dates
+		// delete all timeslots
+		// delete all dates
+
+		await t.delete(tourRef);
+		return tours.docs.map(doc => doc.data());
+	});
 };

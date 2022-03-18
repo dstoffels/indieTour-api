@@ -14,7 +14,7 @@ function pathBldr() {
 	let args = [...arguments];
 	return args.join('/');
 }
-
+const userPath = uid => `${USERS}/${uid}`;
 const bandPath = bandId => `${BANDS}/${bandId}`;
 const bandMembersPath = bandId => `${BANDS}/${bandId}/${MEMBERS}`;
 const memberPath = (bandId, memberId) => `${BANDS}/${bandId}/${MEMBERS}/${memberId}`;
@@ -37,6 +37,7 @@ module.exports = {
 	EVENTS,
 	pathBldr,
 	getPath,
+	userPath,
 	bandPath,
 	bandMembersPath,
 	memberPath,

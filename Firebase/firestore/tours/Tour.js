@@ -6,6 +6,9 @@ class Tour {
 		this.data = {
 			name,
 			notes,
+			startDate: '',
+			endDate: '',
+			numDates: 0,
 			isPerpetual,
 			isArchived: false,
 			path: getPath(this.ref),
