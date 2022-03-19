@@ -96,13 +96,15 @@ exports.editBand = async (request, authUser) => {
 				if (!curMember) {
 					const user = await addNewOrGetExistingUser(members[i]);
 					const newMember = new Member(bandRef, user, members[i], name);
+					console.log(newMember);
 					t.set(newMember.ref, newMember.data);
 				}
 			}
 		});
 		return await activeMember.get().then(doc => doc.data());
-		// return this.getUserBands(request, authUser);
-	} catch (error) {}
+	} catch (error) {
+		console.log(error);
+	}
 };
 
 /**

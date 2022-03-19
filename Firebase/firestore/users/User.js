@@ -6,7 +6,7 @@ class User {
 		this.ref = firestore.collection(USERS).doc();
 		const { email, displayName, emailVerified } = authUser;
 		this.data = {
-			displayName,
+			displayName: this.placeholderName(email),
 			email,
 			activeTour: null,
 			activeMember: null,
@@ -15,6 +15,10 @@ class User {
 			path: getPath(this.ref),
 		};
 	}
+	placeholderName = email => {
+		const i = email.indexOf('@');
+		return email.slice(0, i);
+	};
 }
 
 module.exports = { User };

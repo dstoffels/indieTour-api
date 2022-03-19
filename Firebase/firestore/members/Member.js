@@ -11,7 +11,7 @@ class Member {
 			bandId: bandRef.id,
 			bandName,
 			bandPath: getPath(bandRef),
-			activeTour: tour.data,
+			activeTour: tour?.data || null,
 		};
 	}
 }

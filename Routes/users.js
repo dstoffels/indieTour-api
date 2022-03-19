@@ -16,8 +16,16 @@ module.exports = function (app) {
 			const user = await authorize(usersAPI.getUser)(req);
 			res.send(user.data());
 		} catch (error) {
-			console.log(error);
-			res.send(error);
+			switch (error.code) {
+				case 'auth/id-token-expired':
+					console.log(error.code);
+					res.status(401).send(error.code);
+					break;
+				default:
+					res.status(400);
+					break;
+			}
+			// res.send(error);
 		}
 	});
 

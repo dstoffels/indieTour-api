@@ -29,12 +29,12 @@ exports.getBandTours = async (request, authUser) =>
 exports.editTour = async (request, authUser) => {
 	const { bandId, tourId } = request.params;
 	const tourData = request.body;
-	return await firestore.runTransaction(async t => {
-		const tourRef = firestore.doc(tourPath(bandId, tourId));
-		const tour = await t.get(tourRef);
+	const tourRef = firestore.doc(tourPath(bandId, tourId));
+
+	await firestore.runTransaction(async t => {
 		t.update(tourRef, tourData);
-		return tour.data();
 	});
+	return await tourRef.get().then(doc => doc.data());
 };
 
 exports.deleteTour = async (request, authUser) => {

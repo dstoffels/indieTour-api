@@ -8,7 +8,16 @@ module.exports = function (app) {
 			const userBands = await authorize(bandsAPI.getUserBands)(req);
 			res.send(userBands);
 		} catch (error) {
-			res.send(error);
+			// need a global error handler
+			console.log(error);
+			switch (error.code) {
+				case 'auth/id-token-expired':
+					res.status(401);
+					break;
+				default:
+					res.status(400);
+					break;
+			}
 		}
 	});
 
@@ -18,7 +27,7 @@ module.exports = function (app) {
 			res.send(band);
 		} catch (error) {
 			console.log(error);
-			res.status(400).json(error);
+			res.status(400).send(error);
 		}
 	});
 
@@ -28,8 +37,7 @@ module.exports = function (app) {
 			res.send(updatedBand);
 		} catch (error) {
 			console.log(error);
-			res.status(400);
-			res.send(error);
+			res.status(400).send(error);
 		}
 	});
 
@@ -39,7 +47,7 @@ module.exports = function (app) {
 			res.send(result);
 		} catch (error) {
 			console.log(error);
-			res.status(400).json(error);
+			res.status(400).send(error);
 		}
 	});
 };
