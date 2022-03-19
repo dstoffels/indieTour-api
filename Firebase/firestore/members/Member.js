@@ -6,7 +6,7 @@ class Member {
 		this.data = {
 			path: getPath(this.ref),
 			email: user.email,
-			displayName: user.displayName || '',
+			displayName: user.displayName,
 			role: member.role,
 			bandId: bandRef.id,
 			bandName,

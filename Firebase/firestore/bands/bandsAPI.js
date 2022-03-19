@@ -61,6 +61,12 @@ exports.getUserBands = async (request, authUser) => {
 	});
 };
 
+/**
+ *
+ * @param {*} request
+ * @param {*} authUser
+ * @returns
+ */
 exports.editBand = async (request, authUser) => {
 	const { bandId } = request.params;
 	const { name, members } = request.body;
@@ -84,7 +90,7 @@ exports.editBand = async (request, authUser) => {
 
 				const newMember = members.find(mbr => curMember.email === mbr.email);
 				Boolean(newMember)
-					? t.set(doc.ref, { ...curMember, ...newMember, bandName: name })
+					? t.update(doc.ref, { ...newMember, bandName: name })
 					: curMember.role !== OWNER && t.delete(doc.ref);
 				return curMember;
 			});
@@ -96,7 +102,6 @@ exports.editBand = async (request, authUser) => {
 				if (!curMember) {
 					const user = await addNewOrGetExistingUser(members[i]);
 					const newMember = new Member(bandRef, user, members[i], name);
-					console.log(newMember);
 					t.set(newMember.ref, newMember.data);
 				}
 			}

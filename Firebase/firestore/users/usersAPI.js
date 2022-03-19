@@ -4,7 +4,7 @@ const { User } = require('./User.js');
 
 exports.createUser = async (request, authUser) => {
 	const user = new User(authUser, request.body.hasValidPW);
-	user.ref.create(user.data);
+	await user.ref.create(user.data);
 	return user.data;
 };
 

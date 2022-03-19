@@ -16,10 +16,17 @@ const generateAuthData = userCredentials => {
 	return { user: { uid, email, emailVerified, displayName }, token: stsTokenManager.accessToken };
 };
 
+const placeholderName = email => {
+	const i = email.indexOf('@');
+	return email.slice(0, i);
+};
+
 exports.createEmailUser = async ({ email, password, displayName }) => {
 	const newUserCredentials = await createUserWithEmailAndPassword(firebaseAuth, email, password);
 	await sendEmailVerification(newUserCredentials.user);
-	await updateProfile(newUserCredentials.user, { displayName });
+	await updateProfile(newUserCredentials.user, {
+		displayName: displayName || placeholderName(email),
+	});
 	const user = await usersAPI.createUser(
 		{ body: { hasValidPW: password === 'password' ? false : true } },
 		newUserCredentials.user,
