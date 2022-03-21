@@ -1,3 +1,4 @@
+const { AuthUser } = require('../../auth/authAPI.js');
 const { firestore } = require('../../firebase.js');
 const { validateUniqueNameInCollection } = require('../helpers.js');
 const { getMemberQuery } = require('../members/helpers.js');
@@ -115,7 +116,7 @@ exports.editBand = async (request, authUser) => {
 /**
  * Removes a band and its subcollective tours and members in the firstore db
  * @param {Request} request
- * @param {AuthorizedUser} authUser
+ * @param {AuthUser} authUser
  * @returns the updated bands list for the authorized user
  */
 exports.deleteBand = async (request, authUser) => {

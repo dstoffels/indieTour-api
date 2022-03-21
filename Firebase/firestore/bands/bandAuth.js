@@ -1,4 +1,4 @@
-const { getAuthorizedUser: decodeToken, getAuthorizedUser } = require('../../auth/authAPI.js');
+const { getAuthorizedUser } = require('../../auth/authAPI.js');
 const { getMemberQuery } = require('../members/helpers.js');
 
 const OWNER = 'owner';
@@ -18,6 +18,12 @@ const validateMember = async (authUser, roles, bandId) => {
 	if (!validMember) throw { code: `${authUser.email} is not authorized` };
 };
 
+/**
+ *
+ * @param {*} APIfn
+ * @param {ALL_ROLES} roles
+ * @returns
+ */
 const authorizeRoles = (APIfn, roles) => async request => {
 	const authUser = await getAuthorizedUser(request.headers.auth);
 	await validateMember(authUser, roles, request.params.bandId);

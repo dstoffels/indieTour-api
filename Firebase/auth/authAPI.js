@@ -39,17 +39,30 @@ exports.emailLogin = async ({ email, password }) => {
 	return generateAuthData(userCredentials);
 };
 
-exports.getAuthorizedUser = async token => {
+class AuthUser {
+	constructor(userData) {
+		const { uid, email, email_verified, name } = userData;
+		this.uid = uid;
+		this.email = email;
+		this.displayName = name;
+		this.emailVerified = email_verified;
+	}
+}
+
+/**
+ *
+ * @param {*} token
+ * @returns
+ */
+getAuthorizedUser = async token => {
 	const initUserData = await auth.verifyIdToken(token);
-	return {
-		...initUserData,
-		displayName: initUserData.name,
-		emailVerified: initUserData.email_verified,
-	};
+	return new AuthUser(initUserData);
 };
 
 // AUTHORIZATION
-exports.authorize = APIfn => async request => {
-	const authUser = await this.getAuthorizedUser(request.headers.auth);
+authorize = APIfn => async request => {
+	const authUser = await getAuthorizedUser(request.headers.auth);
 	return await APIfn(request, authUser);
 };
+
+module.exports = { AuthUser, getAuthorizedUser, authorize };

@@ -1,24 +1,14 @@
 const { authorize } = require('../Firebase/auth/authAPI.js');
 const { authorizeRoles, OWNER } = require('../Firebase/firestore/bands/bandAuth.js');
 const bandsAPI = require('../Firebase/firestore/bands/bandsAPI.js');
+const responseErrorHandler = require('../utils/responseErrorHandler.js');
 
 module.exports = function (app) {
 	app.get('/bands', async (req, res) => {
-		try {
+		responseErrorHandler(res, async () => {
 			const userBands = await authorize(bandsAPI.getUserBands)(req);
 			res.send(userBands);
-		} catch (error) {
-			// need a global error handler
-			console.log(error);
-			switch (error.code) {
-				case 'auth/id-token-expired':
-					res.status(401);
-					break;
-				default:
-					res.status(400);
-					break;
-			}
-		}
+		});
 	});
 
 	app.post('/bands/new', async (req, res) => {

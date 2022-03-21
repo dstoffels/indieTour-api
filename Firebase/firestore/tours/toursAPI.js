@@ -5,7 +5,8 @@ const { Tour } = require('./Tour.js');
 
 exports.createTour = async (request, authUser) => {
 	const { bandId } = request.params;
-	const { name, notes } = request.body;
+	const { name, notes, dates } = request.body;
+	console.log(dates);
 	const bandRef = firestore.doc(bandPath(bandId));
 
 	return await firestore.runTransaction(async t => {

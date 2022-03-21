@@ -17,7 +17,7 @@ module.exports = function (app) {
 			const newTour = await authorizeRoles(createTour, ADMIN_ROLES)(req);
 			res.send(newTour);
 		} catch (error) {
-			res.status(400).json(error);
+			res.status(400).send(error);
 			console.log(error);
 		}
 	});
