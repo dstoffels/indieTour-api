@@ -64,8 +64,8 @@ exports.getUserBands = async (request, authUser) => {
 
 /**
  *
- * @param {*} request
- * @param {*} authUser
+ * @param {import('express').Request} request
+ * @param {AuthorizedUser} authUser
  * @returns
  */
 exports.editBand = async (request, authUser) => {
@@ -97,7 +97,7 @@ exports.editBand = async (request, authUser) => {
 			});
 
 			// Add new members, create new user for member if necessary
-			// for loop necessary to avoid 'committed writebatch' error from a foreach
+			// for loop necessary to avoid firebase 'committed writebatch' error from a foreach
 			for (let i = 0; i < members.length; i++) {
 				const curMember = curMembers.find(curMbr => members[i].email === curMbr.email);
 				if (!curMember) {
