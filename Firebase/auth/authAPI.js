@@ -21,20 +21,23 @@ const placeholderName = email => {
 	return email.slice(0, i);
 };
 
-exports.createEmailUser = async ({ email, password, displayName }) => {
+const createEmailUser = async ({ email, password, displayName }) => {
 	const newUserCredentials = await createUserWithEmailAndPassword(firebaseAuth, email, password);
 	await sendEmailVerification(newUserCredentials.user);
 	await updateProfile(newUserCredentials.user, {
 		displayName: displayName || placeholderName(email),
 	});
-	const user = await usersAPI.createUser(
-		{ body: { hasValidPW: password === 'password' ? false : true } },
-		newUserCredentials.user,
-	);
+
+	const user = await usersAPI.createUser({
+		body: {
+			...newUserCredentials.user,
+			hasValidPW: password === 'password' ? false : true,
+		},
+	});
 	return user;
 };
 
-exports.emailLogin = async ({ email, password }) => {
+const emailLogin = async ({ email, password }) => {
 	const userCredentials = await signInWithEmailAndPassword(firebaseAuth, email, password);
 	return generateAuthData(userCredentials);
 };
@@ -65,4 +68,4 @@ authorize = APIfn => async request => {
 	return await APIfn(request, authUser);
 };
 
-module.exports = { AuthUser, getAuthorizedUser, authorize };
+module.exports = { AuthUser, getAuthorizedUser, createEmailUser, emailLogin, authorize };

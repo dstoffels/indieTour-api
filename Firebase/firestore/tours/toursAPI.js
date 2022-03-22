@@ -66,8 +66,6 @@ exports.editTour = async (request, authUser) => {
 	await firestore.runTransaction(async t => {
 		const tourDatesSnap = await t.get(tourDatesRef);
 
-		// does date exist in tour dates
-
 		// compare incoming tourDates [],
 		// update if the current date exists in incoming dates, delete if not
 		const curTourDates = tourDatesSnap.docs.map(doc => {

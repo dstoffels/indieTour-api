@@ -7,9 +7,10 @@ const responseErrorHandler = (res, tryBlock) => {
 	try {
 		tryBlock();
 	} catch (error) {
-		console.log(error);
+		res.status(400).send(error.code);
+		console.log('THERE IS AN ERROR');
 		switch (error.code) {
-			case 'auth/id-token-expired':
+			case '(node:2524) UnhandledPromiseRejectionWarning: auth/id-token-expired':
 				res.status(401).send(error.code);
 				break;
 			default:

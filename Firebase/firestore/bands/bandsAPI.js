@@ -3,7 +3,16 @@ const { firestore } = require('../../firebase.js');
 const { validateUniqueNameInCollection } = require('../helpers.js');
 const { getMemberQuery } = require('../members/helpers.js');
 const { Member } = require('../members/Member.js');
-const { BANDS, MEMBERS, bandPath, bandMembersPath, bandToursPath, USERS } = require('../paths.js');
+const {
+	BANDS,
+	MEMBERS,
+	bandPath,
+	bandMembersPath,
+	bandToursPath,
+	USERS,
+	DATES,
+} = require('../paths.js');
+const { generateTourObj } = require('../tours/helpers.js');
 const { Tour } = require('../tours/Tour.js');
 const { OWNER } = require('./bandAuth.js');
 const { addNewOrGetExistingUser } = require('./helpers.js');
@@ -15,7 +24,7 @@ exports.createBand = async (request, authUser) => {
 	members.push({ ...authUser, role: OWNER });
 
 	try {
-		return firestore.runTransaction(async t => {
+		return await firestore.runTransaction(async t => {
 			const bands = await t.get(firestore.collection(BANDS));
 			const user = t.get(firestore.doc(`${USERS}/${authUser.uid}`));
 
@@ -27,18 +36,14 @@ exports.createBand = async (request, authUser) => {
 			t.set(newBandRef, { name });
 
 			// add general tour
-			const tour = new Tour(
-				newBandRef,
-				'General Tour',
-				'For rogue tour dates, one-offs or laziness :)',
-				true,
-			);
+			const tour = new Tour(newBandRef);
 			t.set(tour.ref, tour.data);
 
 			// add members
 			const memberUsers = await Promise.all(
 				members.map(async member => await addNewOrGetExistingUser(member)),
 			);
+
 			const newMembers = memberUsers.map((user, i) => {
 				const member = new Member(newBandRef, user, members[i], name, tour);
 				t.set(member.ref, member.data);
@@ -47,7 +52,10 @@ exports.createBand = async (request, authUser) => {
 
 			// await editUser({ body: { activeTour: tour.data } }, authUser);
 
-			return newMembers.find(member => member.data.email === authUser.email).data;
+			const userMember = newMembers.find(member => member.data.email === authUser.email).data;
+
+			// return new memberBand w active tour and dates
+			return { ...userMember, activeTour: { ...userMember.activeTour, dates: [] } };
 		});
 	} catch (error) {}
 };
@@ -55,11 +63,16 @@ exports.createBand = async (request, authUser) => {
 exports.getUserBands = async (request, authUser) => {
 	const memberQuery = await getMemberQuery(authUser.email);
 	const userBands = memberQuery.docs.map(doc => doc.data());
-	return userBands.sort((a, b) => {
-		if (a.bandName < b.bandName) return -1;
-		if (a.bandName > b.bandName) return 1;
-		return 0;
-	});
+	const userBandsWithDates = Promise.all(
+		userBands.map(async band => {
+			const tourPath = band.activeTour.path;
+			const tourRef = firestore.doc(tourPath);
+			const tourWithDates = await generateTourObj(tourRef);
+			band.activeTour = tourWithDates;
+			return band;
+		}),
+	);
+	return userBandsWithDates;
 };
 
 /**
@@ -74,7 +87,7 @@ exports.editBand = async (request, authUser) => {
 
 	let activeMember;
 	const bandRef = firestore.doc(bandPath(bandId));
-	const membersQuery = await firestore.collectionGroup(MEMBERS).where('bandId', '==', bandId);
+	const membersQuery = firestore.collectionGroup(MEMBERS).where('bandId', '==', bandId);
 
 	try {
 		await firestore.runTransaction(async t => {
@@ -115,7 +128,7 @@ exports.editBand = async (request, authUser) => {
 
 /**
  * Removes a band and its subcollective tours and members in the firstore db
- * @param {Request} request
+ * @param {import('express').Request} request
  * @param {AuthUser} authUser
  * @returns the updated bands list for the authorized user
  */
@@ -130,11 +143,24 @@ exports.deleteBand = async (request, authUser) => {
 		const members = await t.get(membersRefs);
 		const tours = await t.get(toursRefs);
 
+		// delete all tours an tourDates
+		for (let i = 0; i < tours.docs.length; i++) {
+			const tour = tours.docs[i].ref;
+
+			// delete dates first
+			const dates = await tour
+				.collection(DATES)
+				.listDocuments()
+				.then(docs => docs.map(doc => doc));
+
+			dates.forEach(date => t.delete(date));
+
+			// delete tour
+			t.delete(tour);
+		}
+
 		// delete all members
 		members.docs.forEach(doc => t.delete(doc.ref));
-
-		// delete all tours
-		tours.docs.forEach(doc => t.delete(doc.ref));
 
 		// delete band
 		t.delete(bandRef);

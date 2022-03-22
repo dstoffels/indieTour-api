@@ -56,19 +56,20 @@ exports.removeBandMember = async (request, authUser) => {
 exports.updateMember = async (request, authUser) => {
 	const { bandId, memberId } = request.params;
 	const newData = request.body;
+	delete newData.activeTour.dates;
 
 	const memberRef = firestore.doc(memberPath(bandId, memberId));
 	const userRef = firestore.collection(USERS).where('email', '==', authUser.email);
 
 	return await firestore.runTransaction(async t => {
 		const member = await t.get(memberRef);
-		const user = await t.get(userRef);
+		const user = await t.get(userRef).then(snap => snap.docs[0]);
 
 		// update member
 		t.update(memberRef, newData);
 
 		// update user's activeMember with updated member data
-		t.update(user.docs[0].ref, { activeMember: member.data() });
+		t.update(user.ref, { ...user.data(), activeMember: member.data() });
 		return member;
 	});
 };
