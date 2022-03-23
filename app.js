@@ -28,5 +28,6 @@ require('./Routes/bands.js')(app);
 require('./Routes/users.js')(app);
 require('./Routes/members.js')(app);
 require('./Routes/tours.js')(app);
+require('./Routes/google.js')(app);
 
 module.exports = app;
