@@ -28,9 +28,12 @@ exports.getUser = async (request, authUser) => {
 		const user = users.docs[0].data();
 
 		// must bundle tourDates
-		const tour = firestore.doc(user.activeMember.activeTour.path);
-		const activeTourWithDates = await generateTourObj(tour);
-		user.activeMember.activeTour = activeTourWithDates;
+		if (user.activeMember) {
+			const tour = firestore.doc(user.activeMember.activeTour.path);
+			const activeTourWithDates = await generateTourObj(tour);
+			user.activeMember.activeTour = activeTourWithDates;
+			return user;
+		}
 		return user;
 	});
 };

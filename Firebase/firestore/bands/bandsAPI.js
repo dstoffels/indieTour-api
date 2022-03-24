@@ -50,8 +50,6 @@ exports.createBand = async (request, authUser) => {
 				return member;
 			});
 
-			// await editUser({ body: { activeTour: tour.data } }, authUser);
-
 			const userMember = newMembers.find(member => member.data.email === authUser.email).data;
 
 			// return new memberBand w active tour and dates
@@ -75,7 +73,7 @@ exports.getUserBands = async (request, authUser) => {
 	return userBandsWithDates;
 };
 
-/**
+/** EDIT BAND **
  *
  * @param {import('express').Request} request
  * @param {AuthorizedUser} authUser
@@ -98,6 +96,7 @@ exports.editBand = async (request, authUser) => {
 			// compare incoming members list, update if current member exists, delete if not
 			const curMembers = membersSnap.docs.map(doc => {
 				const curMember = doc.data();
+				// get user's activeMember
 				if (curMember.email === authUser.email) activeMember = doc.ref;
 				// update owner member
 				curMember.role === OWNER && t.update(doc.ref, { bandName: name });
@@ -120,7 +119,16 @@ exports.editBand = async (request, authUser) => {
 				}
 			}
 		});
-		return await activeMember.get().then(doc => doc.data());
+
+		// get activeMember data
+		activeMember = await activeMember.get().then(doc => doc.data());
+
+		// generate active tour data with dates[]
+		const activeTourRef = firestore.doc(activeMember.activeTour.path);
+		const activeTour = await generateTourObj(activeTourRef);
+
+		// bundle member for frontend
+		return { ...activeMember, activeTour };
 	} catch (error) {
 		console.log(error);
 	}

@@ -11,7 +11,6 @@ const placesURL = `https://maps.googleapis.com/maps/api/place/textsearch/json?ke
 const searchplaces = async (req, res) => {
 	const { search } = req.params;
 	const response = await axios.get(placesURL + search);
-	console.log('pinged google places');
 	res.send(response.data);
 };
 
