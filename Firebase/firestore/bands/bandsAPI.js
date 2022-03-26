@@ -63,10 +63,13 @@ exports.getUserBands = async (request, authUser) => {
 	const userBands = memberQuery.docs.map(doc => doc.data());
 	const userBandsWithDates = Promise.all(
 		userBands.map(async band => {
-			const tourPath = band.activeTour.path;
-			const tourRef = firestore.doc(tourPath);
-			const tourWithDates = await generateTourObj(tourRef);
-			band.activeTour = tourWithDates;
+			// need flow to handle null activetour?
+			if (band.activeTour) {
+				const tourPath = band.activeTour.path;
+				const tourRef = firestore.doc(tourPath);
+				const tourWithDates = await generateTourObj(tourRef);
+				band.activeTour = tourWithDates;
+			}
 			return band;
 		}),
 	);

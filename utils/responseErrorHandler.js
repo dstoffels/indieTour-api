@@ -3,14 +3,13 @@
  * @param {import("express").Response} res
  * @param tryBlock
  */
-const responseErrorHandler = (res, tryBlock) => {
+const responseErrorHandler = async (res, tryBlock) => {
 	try {
-		tryBlock();
+		await tryBlock();
 	} catch (error) {
-		res.status(400).send(error.code);
-		console.log('THERE IS AN ERROR');
+		console.log(error);
 		switch (error.code) {
-			case '(node:2524) UnhandledPromiseRejectionWarning: auth/id-token-expired':
+			case 'auth/id-token-expired':
 				res.status(401).send(error.code);
 				break;
 			default:
