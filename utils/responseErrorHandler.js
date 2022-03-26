@@ -7,7 +7,7 @@ const responseErrorHandler = async (res, tryBlock) => {
 	try {
 		await tryBlock();
 	} catch (error) {
-		console.log(error);
+		console.error(error);
 		switch (error.code) {
 			case 'auth/id-token-expired':
 				res.status(401).send(error.code);
