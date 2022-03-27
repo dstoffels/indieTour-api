@@ -51,7 +51,7 @@ exports.editUser = async (request, authUser) => {
 
 	// remove dates[] to prevent dates being added to user doc
 	const data = request.body;
-	Boolean(data.activeMember) && delete data.activeMember.activeTour.dates;
+	Boolean(data.activeMember?.activeTour) && delete data.activeMember.activeTour.dates;
 
 	await user.ref.update(data);
 	return user.data();

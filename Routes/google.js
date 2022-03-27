@@ -9,9 +9,13 @@ const placesURL = `https://maps.googleapis.com/maps/api/place/textsearch/json?ke
  * @param {import("express").Response} res
  */
 const searchplaces = async (req, res) => {
-	const { search } = req.params;
-	const response = await axios.get(placesURL + search);
-	res.send(response.data);
+	try {
+		const { search } = req.params;
+		const response = await axios.get(placesURL + search);
+		res.send(response.data);
+	} catch (error) {
+		res.status(400).send(error);
+	}
 };
 
 module.exports = function (app) {
