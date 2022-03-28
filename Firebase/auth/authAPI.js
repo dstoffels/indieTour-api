@@ -1,4 +1,5 @@
-const { auth, firebaseAuth, firestore } = require('../firebase.js');
+const { auth, firebaseAuth } = require('../firebase.js');
+const usersAPI = require('../firestore/users/usersAPI.js');
 const {
 	createUserWithEmailAndPassword,
 	signInWithEmailAndPassword,
@@ -15,23 +16,56 @@ const generateAuthData = userCredentials => {
 	return { user: { uid, email, emailVerified, displayName }, token: stsTokenManager.accessToken };
 };
 
-// TODO: if pw === 'password', force user to change before logging in??
-exports.createEmailUser = async ({ email, password, displayName }) => {
-	const newUserCredentials = await createUserWithEmailAndPassword(auth, email, password);
-	await sendEmailVerification(newUserCredentials.user);
-	await updateProfile(newUserCredentials.user, { displayName });
-	return generateAuthData(newUserCredentials);
+const placeholderName = email => {
+	const i = email.indexOf('@');
+	return email.slice(0, i);
 };
 
-exports.emailLogin = async ({ email, password }) => {
-	const userCredentials = await signInWithEmailAndPassword(auth, email, password);
+const createEmailUser = async ({ email, password, displayName }) => {
+	const newUserCredentials = await createUserWithEmailAndPassword(firebaseAuth, email, password);
+	await sendEmailVerification(newUserCredentials.user);
+	await updateProfile(newUserCredentials.user, {
+		displayName: displayName || placeholderName(email),
+	});
+
+	const user = await usersAPI.createUser({
+		body: {
+			...newUserCredentials.user,
+			hasValidPW: password === 'password' ? false : true,
+		},
+	});
+	return user;
+};
+
+const emailLogin = async ({ email, password }) => {
+	const userCredentials = await signInWithEmailAndPassword(firebaseAuth, email, password);
 	return generateAuthData(userCredentials);
 };
 
-exports.getAuthorizedUser = async token => await auth.verifyIdToken(token);
+class AuthUser {
+	constructor(userData) {
+		const { uid, email, email_verified, name } = userData;
+		this.uid = uid;
+		this.email = email;
+		this.displayName = name;
+		this.emailVerified = email_verified;
+	}
+}
+
+/**
+ *
+ * @param {*} token
+ * @returns
+ */
+getAuthorizedUser = async token => {
+	const initUserData = await auth.verifyIdToken(token);
+	return new AuthUser(initUserData);
+};
 
 // AUTHORIZATION
-exports.authorize = APIfn => async request => {
-	const authUser = await this.getAuthorizedUser(request.headers.auth);
+authorize = APIfn => async request => {
+	const authUser = await getAuthorizedUser(request.headers.auth);
 	return await APIfn(request, authUser);
 };
+
+module.exports = { AuthUser, getAuthorizedUser, createEmailUser, emailLogin, authorize };

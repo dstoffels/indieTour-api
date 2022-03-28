@@ -2,11 +2,11 @@ const { firestore } = require('../../firebase.js');
 const { MEMBER, OWNER, ADMIN } = require('../bands/bandAuth.js');
 const { addMemberToBand, addNewOrGetExistingUser } = require('../bands/helpers.js');
 const { validateUniqueEmailInCollection, aOrAn } = require('../helpers.js');
-const { pathBldr, MEMBERS, BANDS, memberPath, bandPath } = require('../paths.js');
+const { pathBldr, MEMBERS, BANDS, memberPath, bandPath, USERS } = require('../paths.js');
 const { Member } = require('./Member.js');
 
 exports.getBandMembers = async (request, authUser) => {
-	const bandId = request.params.bandId;
+	const { bandId } = request.params;
 	const path = pathBldr(BANDS, bandId, MEMBERS);
 	return await firestore
 		.collection(path)
@@ -53,6 +53,27 @@ exports.removeBandMember = async (request, authUser) => {
 	});
 };
 
+exports.updateMember = async (request, authUser) => {
+	const { bandId, memberId } = request.params;
+	const newData = request.body;
+	delete newData.activeTour.dates;
+
+	const memberRef = firestore.doc(memberPath(bandId, memberId));
+	const userRef = firestore.collection(USERS).where('email', '==', authUser.email);
+
+	return await firestore.runTransaction(async t => {
+		const member = await t.get(memberRef);
+		const user = await t.get(userRef).then(snap => snap.docs[0]);
+
+		// update member
+		t.update(memberRef, newData);
+
+		// update user's activeMember with updated member data
+		t.update(user.ref, { ...user.data(), activeMember: member.data() });
+		return member;
+	});
+};
+
 exports.changeMemberRole = async (request, authUser) => {
 	const { bandId, memberId } = request.params;
 	const { role } = request.body;
@@ -61,6 +82,7 @@ exports.changeMemberRole = async (request, authUser) => {
 		const member = await t.get(firestore.doc(memberPath(bandId, memberId)));
 
 		// validate operation
+		// FIXME: update to edit all member data (during a user displayName change)
 		if (member.data().role === OWNER)
 			throw {
 				code: 'cannot-change-owner-role',

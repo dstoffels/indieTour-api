@@ -106,3 +106,5 @@ dist
 # Firebase
 privateKey.json
 firebase.config.js
+
+apiKeys.js

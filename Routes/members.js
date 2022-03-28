@@ -3,44 +3,50 @@ const {
 	OWNER,
 	ADMIN,
 	ALL_ROLES,
+	ADMIN_ROLES,
 } = require('../Firebase/firestore/bands/bandAuth.js');
 const {
 	getBandMembers,
 	addBandMember,
 	changeMemberRole,
 	removeBandMember,
+	updateMember,
 } = require('../Firebase/firestore/members/membersAPI.js');
+const responseErrorHandler = require('../utils/responseErrorHandler.js');
 
 module.exports = function (app) {
 	app.get('/bands/:bandId/members', async (req, res) => {
-		const bandMembers = await authorizeRoles(getBandMembers, ALL_ROLES)(req);
-		res.send(bandMembers);
+		responseErrorHandler(res, async () => {
+			const bandMembers = await authorizeRoles(getBandMembers, ALL_ROLES)(req);
+			res.send(bandMembers);
+		});
 	});
 
 	app.post('/bands/:bandId/members', async (req, res) => {
-		try {
-			const newMember = await authorizeRoles(addBandMember, [OWNER, ADMIN])(req);
+		responseErrorHandler(res, async () => {
+			const newMember = await authorizeRoles(addBandMember, ADMIN_ROLES)(req);
 			res.send(newMember);
-		} catch (error) {
-			res.status(400).json(error);
-		}
+		});
+	});
+
+	app.put('/bands/:bandId/members/:memberId', async (req, res) => {
+		responseErrorHandler(res, async () => {
+			const updatedMember = await authorizeRoles(updateMember, ADMIN_ROLES)(req);
+			res.send(updatedMember);
+		});
 	});
 
 	app.put('/bands/:bandId/members/:memberId/role', async (req, res) => {
-		try {
-			const updatedMember = await authorizeRoles(changeMemberRole, [OWNER])(req);
+		responseErrorHandler(res, async () => {
+			const updatedMember = await authorizeRoles(changeMemberRole, ADMIN_ROLES)(req);
 			res.send(updatedMember);
-		} catch (error) {
-			res.status(400).json(error);
-		}
+		});
 	});
 
 	app.delete('/bands/:bandId/members/:memberId', async (req, res) => {
-		try {
-			await authorizeRoles(removeBandMember, [OWNER])(req);
+		responseErrorHandler(res, async () => {
+			await authorizeRoles(removeBandMember, ADMIN_ROLES)(req);
 			res.status(204).send();
-		} catch (error) {
-			res.status(400).json(error);
-		}
+		});
 	});
 };

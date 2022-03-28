@@ -1,15 +1,14 @@
 const { authorize } = require('../Firebase/auth/authAPI.js');
 const { authorizeRoles, OWNER } = require('../Firebase/firestore/bands/bandAuth.js');
 const bandsAPI = require('../Firebase/firestore/bands/bandsAPI.js');
+const responseErrorHandler = require('../utils/responseErrorHandler.js');
 
 module.exports = function (app) {
 	app.get('/bands', async (req, res) => {
-		try {
+		responseErrorHandler(res, async () => {
 			const userBands = await authorize(bandsAPI.getUserBands)(req);
 			res.send(userBands);
-		} catch (error) {
-			res.send(error);
-		}
+		});
 	});
 
 	app.post('/bands/new', async (req, res) => {
@@ -18,7 +17,7 @@ module.exports = function (app) {
 			res.send(band);
 		} catch (error) {
 			console.log(error);
-			res.status(400).json(error);
+			res.status(400).send(error);
 		}
 	});
 
@@ -28,16 +27,17 @@ module.exports = function (app) {
 			res.send(updatedBand);
 		} catch (error) {
 			console.log(error);
-			res.status(400).json(error);
+			res.status(400).send(error);
 		}
 	});
 
-	app.delete('/bands/:bandId/delete', async (req, res) => {
+	app.delete('/bands/:bandId', async (req, res) => {
 		try {
 			const result = await authorizeRoles(bandsAPI.deleteBand, [OWNER])(req);
-			res.status(204).json(result);
+			res.send(result);
 		} catch (error) {
-			res.status(400).json(error);
+			console.log(error);
+			res.status(400).send(error);
 		}
 	});
 };
