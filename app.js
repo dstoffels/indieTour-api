@@ -5,7 +5,7 @@ const cors = require('cors');
 // setup express app
 const app = express();
 
-const port = 3002;
+const PORT = 3000;
 
 // MIDDLEWARE
 const json = bodyParser.json();
@@ -13,14 +13,8 @@ app.use(json);
 
 app.use(cors());
 
-// app.use(function (req, res, next) {
-// 	res.header('Access-Control-Allow-Origin', '*');
-// 	res.header('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content-Type, Accept');
-// 	next();
-// });
-
-app.listen(port, () => {
-	console.log(`indieTour listening on port ${port}`);
+app.listen(PORT, () => {
+	console.log(`listening on port ${PORT}`);
 });
 
 require('./Routes/auth.js')(app);

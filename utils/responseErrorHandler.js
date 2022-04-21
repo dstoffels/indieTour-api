@@ -5,6 +5,7 @@
  */
 const responseErrorHandler = async (res, tryBlock) => {
 	try {
+		console.log(res);
 		await tryBlock();
 	} catch (error) {
 		console.error(error);
